@@ -5,8 +5,7 @@
 
 "use client";
 
-import { useEffect } from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -31,13 +30,19 @@ function useReveal() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("visible");
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     );
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const elements = document.querySelectorAll(".reveal");
+    elements.forEach((el) => observer.observe(el));
+    return () => {
+      elements.forEach((el) => observer.unobserve(el));
+      observer.disconnect();
+    };
   }, []);
 }
 
@@ -137,31 +142,20 @@ const PRIVATE = {
   ],
 };
 
-// ── ページ本体 ────────────────────────────────────────────────
+// ── ヘルパー ──────────────────────────────────────────────────
 
-function useReveal() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    );
-    const elements = document.querySelectorAll(".reveal");
-    elements.forEach((el) => observer.observe(el));
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-      observer.disconnect();
-    };
-  }, []);
+function InfoPill({ icon: Icon, text }: { icon: any; text: string }) {
+  return (
+    <div className="flex items-center gap-2 text-white/50 bg-white/5 px-3 py-1.5 rounded-lg text-sm">
+      <Icon className="w-4 h-4" />
+      {text}
+    </div>
+  );
 }
 
+// ── ページ本体 ────────────────────────────────────────────────
+
 export default function ProgramsPage() {
-  useReveal();
   useReveal();
 
   return (
@@ -172,15 +166,13 @@ export default function ProgramsPage() {
           <span
             className="inline-flex items-center gap-2
                        text-xs font-semibold tracking-widest uppercase
-                       border border-[#F97316]/20 text-[#F97316]/70
+                       border border-white/10 text-white/50
                        rounded-full px-3.5 py-1.5 mb-5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]/50" />
             Our Programs
           </span>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4">
-            Find Your{" "}
-            <span className="gradient-text">Level</span>
+            Find Your <span className="text-white">Level</span>
           </h1>
           <p className="text-white/40 text-lg max-w-xl mx-auto">
             Three programs built for where you are — and where you want to go.
@@ -396,22 +388,4 @@ export default function ProgramsPage() {
   );
 }
 
-// ── Helper ───────────────────────────────────────────────────
 
-function InfoPill({
-  icon: Icon,
-  text,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  text: string;
-}) {
-  return (
-    <span
-      className="inline-flex items-center gap-2 text-xs font-medium
-                 text-white/40 border border-white/8 rounded-full px-3 py-1.5"
-    >
-      <Icon className="w-3.5 h-3.5" />
-      {text}
-    </span>
-  );
-}
