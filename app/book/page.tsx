@@ -243,7 +243,7 @@ function BookingForm({
           Select Program *
         </label>
         <div className="grid grid-cols-1 gap-3">
-          {PROGRAMS.map(({ id, name, tagline, emoji }) => (
+          {PROGRAMS.map(({ id, name, tagline }) => (
             <button
               key={id}
               type="button"
@@ -262,7 +262,7 @@ function BookingForm({
                                        : "bg-white/5 text-white/40"
                                    }`}
               >
-                <span className="text-xl">{emoji}</span>
+
               </div>
               <h3 className="font-bold text-lg mb-1">{name}</h3>
               <p className="text-xs text-white/30">{tagline}</p>
