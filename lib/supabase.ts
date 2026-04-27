@@ -14,11 +14,11 @@ import { createClient } from "@supabase/supabase-js";
 // 環境変数から URL と キーを読み込む
 // → .env.local に値を入れれば自動で読み込まれます
 // → まだ設定していなくてもビルドは通ります（ダミー値で初期化）
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-project.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key";
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("⚠️ Supabase environment variables are missing. Please set them in your dashboard.");
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  console.warn("⚠️ Supabase environment variables are missing. Please set them in your Vercel dashboard.");
 }
 
 // Supabase クライアント（ブラウザから使えるもの）
