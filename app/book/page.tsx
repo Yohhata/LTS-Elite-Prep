@@ -24,17 +24,12 @@ const PROGRAMS = [
   {
     id: "futures",
     name: "LTS Futures",
-    tagline: "Youth Development (Ages 8–14)",
+    tagline: "Ages 8–14 · Technical Development",
   },
   {
     id: "high",
     name: "LTS High",
-    tagline: "High School Elite (Ages 14–18)",
-  },
-  {
-    id: "college",
-    name: "LTS College",
-    tagline: "College Prep (Ages 17–22)",
+    tagline: "Ages 14–18 · Competitive Performance",
   },
   {
     id: "private",

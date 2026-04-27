@@ -76,92 +76,70 @@ const PROGRAMS = [
     emoji: null,
     featured: true,
   },
-  {
-    id: "college",
-    tag: "LTS College",
-    title: "College Prep",
-    ages: "College-Level Athletes",
-    desc: "High-intensity training for players ready to compete at the next level. No shortcuts.",
-    features: [
-      "Elite-level conditioning",
-      "Position-specific training",
-      "Data-driven performance tracking",
-      "Recruiting support",
-    ],
-    emoji: null,
-    featured: false,
-  },
 ];
 
 const PACT = [
   {
     letter: "P",
     word: "Purposeful",
-    desc: "Every rep, every drill — done with intention.",
-  },
-  {
-    letter: "A",
-    word: "Alert",
-    desc: "Stay present, read the game, make smart decisions.",
-  },
-  {
-    letter: "C",
-    word: "Conscious",
-    desc: "Understand your body, your game, your growth.",
-  },
-  {
-    letter: "T",
-    word: "Technical",
-    desc: "Precision and craft in every aspect of your game.",
-  },
-];
-
-const COACHES = [
+    desc:const COACHES = [
   {
     name: "Paolo Labrador",
     role: "Head Coach & Founder",
-    bio: "Asst. Coach at Douglas College · Head Coach at Magee Secondary. Paolo built LTS on one belief: every athlete deserves a coach who truly invests in them.",
+    bio: "Asst. Coach Douglas College MBB · Head Coach Magee Secondary. Paolo has provided development for pros, NCAA, and USports athletes. 'It is my personal mission to ensure that my athletes achieve their goals.'",
     photo: "/images/DSC03301.jpg",
     initial: "PL",
     imageClass: "object-cover object-top scale-[1.1] origin-top",
   },
   {
-    name: "Mikyle Malabuyoc",
-    role: "Coach",
-    bio: "Former Vancouver Bandits player & SFU Red Leafs alumnus. Mikyle brings pro-level intensity and a genuine love for player development.",
-    photo: "/images/mikyle-new.jpg",
-    initial: "MM",
-    imageClass: "object-cover object-top scale-[1.45] origin-top",
-  },
-  {
     name: "Thomas Manganini",
-    role: "Coach",
-    bio: "SFU Red Leafs alumnus. Specializes in guard development and offensive systems. Thomas focuses on the technical mastery required for high-level play.",
+    role: "Junior Coach",
+    bio: "CTA West Alumni · SFU Red Leafs MBB. Specializes in guard development and technical mastery.",
     photo: "/images/IMG_1872.webp",
     initial: "TM",
     imageClass: "object-cover object-top scale-[1.0]",
   },
   {
     name: "Enrique Garcia",
-    role: "Coach",
-    bio: "UOttawa GeeGees alumnus. Expert in defensive schemes and player development.",
+    role: "Junior Coach",
+    bio: "CTA West Alumni · UOttawa GeeGees MBB. Expert in defensive schemes and player development.",
     photo: "/images/enrique-new.jpg",
     initial: "EG",
     imageClass: "object-cover object-top",
+  },
+  {
+    name: "Mikyle Malabuyoc",
+    role: "Junior Coach",
+    bio: "SFU Red Leafs MBB · Former Vancouver Bandits player. Brings pro-level intensity and mentorship.",
+    photo: "/images/mikyle-new.jpg",
+    initial: "MM",
+    imageClass: "object-cover object-top scale-[1.45] origin-top",
   },
 ];
 
 const TESTIMONIALS = [
   {
     quote:
-      "The coaches actually care. They remember what you struggled with last week and check if you fixed it. That kind of attention changed my game.",
-    author: "Jordan M.",
-    role: "LTS High · Grade 11",
+      "IMPROVED NOT JUST STRICT BAG AND SKILL WORK BUT BOTH OFF BALL MOVEMENT AND PASSING. BEING ABLE TO READ DEFENSES WHILE PLAYING THROUGH CONTACT. WORKING AGAINST MULTIPLE DEFENDERS GUARDING ME AT ONCE TO MAKE A READ AND BE ABLE TO SCORE WHILE DOUBLE TEAMED TO MAKE IN GAME SITUATIONS EASIER AND SLOWS DOWN THE GAME WHEN IN HIGH PRESSURE SITUATIONS.",
+    author: "Andres Garcia",
+    role: "UPREP CANADA, Vancouver College 2025",
     stars: 5,
   },
   {
     quote:
-      "My son went from nervous about tryouts to making the school team. The Futures program gave him way more than just basketball skills.",
+      "VERY HIGH LEVEL SKILLS TRAINING, ALSO IMPROVING PHYSICAL AND MENTAL ASPECTS OF THE GAME THROUGHOUT DRILLS THAT INCLUDE REAL GAME LIKE SCENARIOS. CONDITIONING AT LTS HAS ALSO BEEN A KEY PART OF GROWTH THIS SUMMER. THROUGHOUT MY TRAINING SESSIONS WITH LTS I AM CONFIDENT ENOUGH TO SAY THAT I HAVE GROWN BOTH MENTALLY AND PHYSICALLY THROUGHOUT THE GAME OF BASKETBALL.",
+    author: "Vincent Velasquez",
+    role: "Vancouver College / University of the Fraser Valley",
+    stars: 5,
+  },
+  {
+    quote:
+      "I MET COACH PAOLO THROUGH THE BASKETBALL COMMUNITY. HIS TRAINING HELPED ME IMPROVE IN ALL ASPECTS OF THE GAME. COACH PAOLO SHOWED CARE FOR EVERY LITTLE DETAIL AND MADE SURE TO KEEP ME RIGHT DURING MY OFF SEASON BEFORE COLLEGE BASKETBALL.",
+    author: "Justin Pamintuan",
+    role: "Byrne Creek / Capilano University",
+    stars: 5,
+  },
+];hool team. The Futures program gave him way more than just basketball skills.",
     author: "Parent of Aiden K.",
     role: "LTS Futures · Age 12",
     stars: 5,
