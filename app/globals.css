@@ -1,0 +1,185 @@
+/* ============================================================
+   Global Styles — LTS Elite Prep
+   - Font: Syne (headings) + Inter (body)
+   - Palette: dark base with warm orange accent
+   - "Community & Growth" vibe — approachable yet professional
+   ============================================================ */
+
+@import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────────── */
+:root {
+  --bg:          #000000;
+  --surface:     #0a0a0a;
+  --surface2:    #111111;
+  --surface3:    #161616;
+  --border:      rgba(255,255,255,0.1);
+  --border-hover:rgba(255,255,255,0.3);
+  --text:        #ffffff;
+  --text-muted:  #a0a0a0;
+  --text-dim:    #666666;
+
+  /* Premium Monochrome Accent */
+  --accent:      #ffffff;
+  --accent-soft: rgba(255,255,255,0.05);
+  --accent-glow: rgba(255,255,255,0.1);
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-anton), "Anton", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+p, li, span, label, a {
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(249,115,22,0.3); }
+  70%  { box-shadow: 0 0 0 12px rgba(249,115,22,0); }
+  100% { box-shadow: 0 0 0 0 rgba(249,115,22,0);    }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0;  }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+
+.animate-fade-up  { animation: fadeUp  0.7s ease-out forwards; }
+.animate-fade-in  { animation: fadeIn  0.5s ease-out forwards; }
+.animate-marquee  { animation: marquee 30s linear infinite;     }
+.animate-float    { animation: float   4s ease-in-out infinite; }
+.animate-pulse-ring { animation: pulse-ring 2s ease-out infinite; }
+
+/* Staggered delay helpers */
+.delay-100 { animation-delay: 0.10s; }
+.delay-200 { animation-delay: 0.20s; }
+.delay-300 { animation-delay: 0.30s; }
+.delay-400 { animation-delay: 0.40s; }
+.delay-500 { animation-delay: 0.50s; }
+.delay-600 { animation-delay: 0.60s; }
+
+/* ── Navbar blur ───────────────────────────────────────────── */
+.nav-glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Card hover lift ──────────────────────────────────────── */
+.card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-hover) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Scroll-reveal animation ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Accent gradient text ─────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff, #888888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Accent button styles ─────────────────────────────────── */
+.btn-accent {
+  background: #ffffff;
+  color: #000000;
+  transition: all 0.3s ease;
+}
+.btn-accent:hover {
+  background: #f0f0f0;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ── Warm card glow on hover ──────────────────────────────── */
+.card-warm:hover {
+  border-color: rgba(249,115,22,0.2) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+              0 0 80px rgba(249,115,22,0.06);
+}
+
+/* ── Stat counter animation ───────────────────────────────── */
+.stat-number {
+  animation: countUp 0.6s ease-out forwards;
+}
+
+/* ── Instagram gradient border ────────────────────────────── */
+.ig-gradient {
+  background: linear-gradient(45deg, #ffffff, #666666);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Form focus accent ring ───────────────────────────────── */
+.input-accent:focus {
+  border-color: rgba(249,115,22,0.4) !important;
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+}
+
+/* ── Admin status badges ──────────────────────────────────── */
+.badge-pending   { background: rgba(234,179,8,0.1);  color: #EAB308; border: 1px solid rgba(234,179,8,0.2); }
+.badge-confirmed { background: rgba(34,197,94,0.1);  color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
+.badge-cancelled { background: rgba(239,68,68,0.1);  color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
