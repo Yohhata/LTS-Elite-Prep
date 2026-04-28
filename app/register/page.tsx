@@ -126,14 +126,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-        <div className="mt-16 text-center reveal">
-          <p className="text-white/20 text-sm">
-            All passes are valid for both LTS Futures and LTS High programs. 
-            Questions? <Link href="/contact" className="text-white underline">Contact us</Link>.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
