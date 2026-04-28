@@ -30,11 +30,28 @@ export default function CollegeContactPage() {
     e.preventDefault();
     setLoading(true);
     
-    // 実際にはここで Supabase や Resend に送信
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setLoading(false);
-    setSubmitted(true);
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      level: formData.get("level"),
+      message: formData.get("message"),
+    };
+
+    try {
+      const res = await fetch("/api/college-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) throw new Error("Failed to send");
+      setSubmitted(true);
+    } catch (err) {
+      alert("Something went wrong. Please try again or email us directly at info@ltseliteprep.ca");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -102,6 +119,7 @@ export default function CollegeContactPage() {
                 <label className="block text-[10px] font-black tracking-[0.2em] text-white/30 uppercase mb-2">Full Name</label>
                 <input 
                   required
+                  name="name"
                   type="text" 
                   placeholder="JORDAN SMITH"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-white/30 transition-all font-bold placeholder:text-white/10"
@@ -111,6 +129,7 @@ export default function CollegeContactPage() {
                 <label className="block text-[10px] font-black tracking-[0.2em] text-white/30 uppercase mb-2">Email Address</label>
                 <input 
                   required
+                  name="email"
                   type="email" 
                   placeholder="JORDAN@EXAMPLE.COM"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-white/30 transition-all font-bold placeholder:text-white/10"
@@ -119,6 +138,7 @@ export default function CollegeContactPage() {
               <div>
                 <label className="block text-[10px] font-black tracking-[0.2em] text-white/30 uppercase mb-2">Current Team / Level</label>
                 <input 
+                  name="level"
                   type="text" 
                   placeholder="HS SENIOR / COLLEGE FRESHMAN"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-white/30 transition-all font-bold placeholder:text-white/10"
@@ -127,6 +147,7 @@ export default function CollegeContactPage() {
               <div>
                 <label className="block text-[10px] font-black tracking-[0.2em] text-white/30 uppercase mb-2">How can we help your game?</label>
                 <textarea 
+                  name="message"
                   rows={4}
                   placeholder="TELL US ABOUT YOUR GOALS..."
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-white/30 transition-all font-bold placeholder:text-white/10 resize-none"
