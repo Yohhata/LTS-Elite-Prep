@@ -500,7 +500,47 @@ function PactSection() {
                 key={letter}
                 style={{ transitionDelay: `${i * 60}ms` }}
                 className="reveal card card-warm bg-[#111] border border-white/7 rounded-2xl p-6"
-                       <div className="relative aspect-[4/5] bg-[#111] flex items-center justify-center overflow-hidden">
+              >
+                <span
+                  className="text-5xl font-extrabold leading-none
+                             text-white"
+                >
+                  {letter}
+                </span>
+                <p className="font-extrabold text-lg mt-2 mb-1">{word}</p>
+                <p className="text-white/40 text-sm leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Coaches ──────────────────────────────────────────────────
+function CoachesSection() {
+  return (
+    <section className="py-24 lg:py-32 bg-[#0a0a0a]">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+        <div className="mb-14 reveal text-center">
+          <SectionLabel text="The Team" />
+          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+            Coaches Who&rsquo;ve <span className="text-white">Been There</span>
+          </h2>
+          <p className="text-white/40 mt-3 max-w-lg mx-auto">
+            Real players turned real coaches. They know what it takes.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {COACHES.map((coach, i) => (
+            <div
+              key={coach.name}
+              style={{ transitionDelay: `${i * 80}ms` }}
+              className="reveal card card-warm bg-[#0f0f0f] border border-white/10 rounded-2xl overflow-hidden"
+            >
+              <div className="relative aspect-[4/5] bg-[#111] flex items-center justify-center overflow-hidden">
                 {coach.photo ? (
                   <Image
                     src={coach.photo}
@@ -528,45 +568,6 @@ function PactSection() {
                     {coach.bio}
                   </p>
                 )}
-              </div>
-            </div>
-          ))}card-warm bg-[#111] border border-white/7 rounded-2xl overflow-hidden"
-            >
-              {/* Photo area */}
-              <div className="relative aspect-[4/5] bg-gradient-to-br from-[#161616] to-[#111]
-                              flex items-center justify-center overflow-hidden">
-                {coach.photo ? (
-                  <Image
-                    src={coach.photo}
-                    alt={coach.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                    className={coach.imageClass || "object-cover object-top"}
-                  />
-                ) : (
-                  <span
-                    className="w-20 h-20 rounded-full
-                               bg-gradient-to-br from-[#F97316]/20 to-[#F97316]/5
-                               border-2 border-[#F97316]/20
-                               flex items-center justify-center
-                               text-2xl font-extrabold text-[#F97316]/60"
-                  >
-                    {coach.initial}
-                  </span>
-                )}
-              </div>
-
-              <div className="p-5">
-                <h3 className="font-extrabold text-lg">{coach.name}</h3>
-                <p
-                  className="text-xs font-bold uppercase tracking-wider
-                             text-[#F97316]/50 mt-1 mb-3"
-                >
-                  {coach.role}
-                </p>
-                <p className="text-white/40 text-sm leading-relaxed">
-                  {coach.bio}
-                </p>
               </div>
             </div>
           ))}
