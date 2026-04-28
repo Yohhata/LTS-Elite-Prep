@@ -114,23 +114,29 @@ export async function POST(request: Request) {
           `,
         });
 
-        // 2. ユーザー（お客さん）への確認メール
+        // 2. ユーザー（お客さん）への確認メール (Invoice)
         await resend.emails.send({
-          from: "LTS Elite Prep <onboarding@resend.dev>",
+          from: "LTS Elite Prep <info@ltseliteprep.ca>",
           to: email,
-          subject: `Booking Confirmed: ${programLabels[program] || program} — LTS Elite Prep`,
+          subject: "Action Required: Complete your registration for LTS Elite Prep",
           html: `
-            <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#000;">
-              <h2 style="font-size:24px;letter-spacing:-0.02em;">WELCOME TO THE TEAM.</h2>
+            <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#000;line-height:1.6;">
               <p>Hi ${name},</p>
-              <p>Thanks for booking your session with LTS Elite Prep. We've received your request for the <strong>${programLabels[program] || program}</strong> program.</p>
-              <p>Our team will review your preferred schedule and get back to you within 24 hours to confirm the details.</p>
-              <div style="margin:24px 0;padding:20px;background:#f5f5f5;border-radius:12px;">
-                <p style="margin:0;font-size:14px;color:#666;">Preferred Date: <strong>${preferred_date || "To be discussed"}</strong></p>
-                <p style="margin:0;font-size:14px;color:#666;">Preferred Time: <strong>${preferred_time || "To be discussed"}</strong></p>
+              <p>Thank you for registering with LTS Elite Prep!</p>
+              <p>To secure your spot for the <strong>${programLabels[program] || program}</strong>, please complete the payment via E-transfer within the next 48 hours.</p>
+              
+              <div style="margin:30px 0;padding:25px;background:#f9f9f9;border-radius:16px;border:1px solid #eee;">
+                <h3 style="margin-top:0;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</h3>
+                <p style="margin:10px 0;"><strong>E-transfer to:</strong> info@ltseliteprep.ca</p>
+                <p style="margin:10px 0;"><strong>Amount:</strong> $75</p>
+                <p style="margin:10px 0;font-size:13px;color:#666;"><em>Note: Please include the athlete's name in the transfer notes.</em></p>
               </div>
-              <p>See you on the court.</p>
-              <p>— Paolo & The LTS Team</p>
+
+              <p style="color:#d93025;font-weight:bold;">Please note: If payment is not received within 48 hours, your registration may be automatically cancelled.</p>
+              <p>Once we receive your payment, we will send you a formal receipt/invoice. We look forward to seeing you on the court!</p>
+              
+              <p style="margin-top:40px;">Best regards,</p>
+              <p><strong>Paolo</strong><br>LTS Elite Prep Team</p>
             </div>
           `,
         });
