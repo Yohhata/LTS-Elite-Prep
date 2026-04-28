@@ -49,7 +49,7 @@ const PROGRAMS = [
   {
     id: "futures",
     tag: "LTS Futures",
-    title: "Youth Development",
+    title: "LTS Futures",
     ages: "Elementary & Middle School",
     desc: "The foundation. We make basketball fun while building real skills that will carry players for life.",
     features: [
@@ -76,44 +76,78 @@ const PROGRAMS = [
     emoji: null,
     featured: true,
   },
+  {
+    id: "college",
+    tag: "LTS College",
+    title: "LTS College",
+    ages: "College-Level Athletes",
+    desc: "High-intensity training for players ready to compete at the next level. No shortcuts.",
+    features: [
+      "Elite-level conditioning",
+      "Position-specific training",
+      "Data-driven performance tracking",
+      "Recruiting support",
+    ],
+    emoji: null,
+    featured: false,
+  },
 ];
 
 const PACT = [
   {
     letter: "P",
     word: "Purposeful",
-    desc:const COACHES = [
+    desc: "Every rep, every drill — done with intention.",
+  },
+  {
+    letter: "A",
+    word: "Alert",
+    desc: "Stay present, read the game, make smart decisions.",
+  },
+  {
+    letter: "C",
+    word: "Conscious",
+    desc: "Understand your body, your game, your growth.",
+  },
+  {
+    letter: "T",
+    word: "Technical",
+    desc: "Precision and craft in every aspect of your game.",
+  },
+];
+
+const COACHES = [
   {
     name: "Paolo Labrador",
     role: "Head Coach & Founder",
-    bio: "Asst. Coach Douglas College MBB · Head Coach Magee Secondary. Paolo has provided development for pros, NCAA, and USports athletes. 'It is my personal mission to ensure that my athletes achieve their goals.'",
+    bio: "Asst. Coach at Douglas College · Head Coach at Magee Secondary. Paolo built LTS on one belief: every athlete deserves a coach who truly invests in them.",
     photo: "/images/DSC03301.jpg",
     initial: "PL",
     imageClass: "object-cover object-top scale-[1.1] origin-top",
   },
   {
+    name: "Mikyle Malabuyoc",
+    role: "Coach",
+    bio: "Former Vancouver Bandits player. Mikyle brings pro-level intensity and a genuine love for player development.",
+    photo: "/images/mikyle-new.jpg",
+    initial: "MM",
+    imageClass: "object-cover object-top scale-[1.45] origin-top",
+  },
+  {
     name: "Thomas Manganini",
-    role: "Junior Coach",
-    bio: "CTA West Alumni · SFU Red Leafs MBB. Specializes in guard development and technical mastery.",
+    role: "Coach",
+    bio: "Specializes in guard development and offensive systems. Thomas focuses on the technical mastery required for high-level play.",
     photo: "/images/IMG_1872.webp",
     initial: "TM",
     imageClass: "object-cover object-top scale-[1.0]",
   },
   {
     name: "Enrique Garcia",
-    role: "Junior Coach",
-    bio: "CTA West Alumni · UOttawa GeeGees MBB. Expert in defensive schemes and player development.",
+    role: "Coach",
+    bio: "Expert in defensive schemes and player development.",
     photo: "/images/enrique-new.jpg",
     initial: "EG",
     imageClass: "object-cover object-top",
-  },
-  {
-    name: "Mikyle Malabuyoc",
-    role: "Junior Coach",
-    bio: "SFU Red Leafs MBB · Former Vancouver Bandits player. Brings pro-level intensity and mentorship.",
-    photo: "/images/mikyle-new.jpg",
-    initial: "MM",
-    imageClass: "object-cover object-top scale-[1.45] origin-top",
   },
 ];
 
@@ -127,7 +161,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "VERY HIGH LEVEL SKILLS TRAINING, ALSO IMPROVING PHYSICAL AND MENTAL ASPECTS OF THE GAME THROUGHOUT DRILLS THAT INCLUDE REAL GAME LIKE SCENARIOS. CONDITIONING AT LTS HAS ALSO BEEN A KEY PART OF GROWTH THIS SUMMER. THROUGHOUT MY TRAINING SESSIONS WITH LTS I AM CONFIDENT ENOUGH TO SAY THAT I HAVE GROWN BOTH MENTALLY AND PHYSICALLY THROUGHOUT THE GAME OF BASKETBALL.",
+      "VERY HIGH LEVEL SKILLS TRAINING. ALSO IMPROVING PHYSICAL AND MENTAL ASPECTS OF THE GAME THROUGHOUT DRILLS THAT INCLUDE REAL GAME LIKE SCENARIOS. CONDITIONING AT LTS HAS ALSO BEEN A KEY PART OF GROWTH THIS SUMMER. THROUGHOUT MY TRAINING SESSIONS WITH LTS I AM CONFIDENT ENOUGH TO SAY THAT I HAVE GROWN BOTH MENTALLY AND PHYSICALLY THROUGHOUT THE GAME OF BASKETBALL.",
     author: "Vincent Velasquez",
     role: "Vancouver College / University of the Fraser Valley",
     stars: 5,
@@ -137,18 +171,6 @@ const TESTIMONIALS = [
       "I MET COACH PAOLO THROUGH THE BASKETBALL COMMUNITY. HIS TRAINING HELPED ME IMPROVE IN ALL ASPECTS OF THE GAME. COACH PAOLO SHOWED CARE FOR EVERY LITTLE DETAIL AND MADE SURE TO KEEP ME RIGHT DURING MY OFF SEASON BEFORE COLLEGE BASKETBALL.",
     author: "Justin Pamintuan",
     role: "Byrne Creek / Capilano University",
-    stars: 5,
-  },
-];hool team. The Futures program gave him way more than just basketball skills.",
-    author: "Parent of Aiden K.",
-    role: "LTS Futures · Age 12",
-    stars: 5,
-  },
-  {
-    quote:
-      "Honest, intense, and actually fun. I've trained at other academies and nothing comes close to the environment Paolo's built here.",
-    author: "Darius T.",
-    role: "LTS College",
     stars: 5,
   },
 ];
@@ -193,7 +215,6 @@ export default function Home() {
       <PactSection />
       <CoachesSection />
       <TestimonialsSection />
-      <InstagramSection />
       <CtaSection />
     </>
   );
@@ -370,11 +391,10 @@ function ProgramsSection() {
               style={{ transitionDelay: `${i * 80}ms` }}
               className={`reveal card card-warm relative bg-[#111]
                          border border-white/7 rounded-2xl p-7 flex flex-col
-                         ${
-                           program.featured
-                             ? "md:scale-105 md:z-10 border-[#F97316]/20 shadow-2xl shadow-black/60"
-                             : ""
-                         }`}
+                         ${program.featured
+                  ? "md:scale-105 md:z-10 border-[#F97316]/20 shadow-2xl shadow-black/60"
+                  : ""
+                }`}
             >
               {/* Featured badge */}
               {program.featured && (
@@ -425,11 +445,10 @@ function ProgramsSection() {
               <Link
                 href="/micro-academy"
                 className={`block text-center font-black py-4 rounded-xl
-                           text-sm transition-all ${
-                             program.featured
-                               ? "btn-accent"
-                               : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
-                           }`}
+                           text-sm transition-all ${program.featured
+                    ? "btn-accent"
+                    : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
+                  }`}
               >
                 {program.featured ? "TRAIN NOW" : "LEARN MORE →"}
               </Link>
@@ -612,67 +631,7 @@ function TestimonialsSection() {
 }
 
 // ── Instagram Feed ───────────────────────────────────────────
-function InstagramSection() {
-  return (
-    <section className="py-24 bg-[#0a0a0a] border-t border-white/5">
-      <div className="max-w-4xl mx-auto px-5 sm:px-8 text-center reveal">
-        <SectionLabel text="Follow Us" />
-        <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
-          See Us in Action
-        </h2>
-        <p className="text-white/40 mb-8 max-w-md mx-auto">
-          Follow our journey on Instagram for training clips, behind-the-scenes,
-          and athlete highlights.
-        </p>
 
-        {/* Instagram Embed Placeholder — replace with actual embed */}
-        <a
-          href="https://www.instagram.com/lts_elite_prep/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-3
-                     bg-gradient-to-r from-[#f09433] via-[#dc2743] to-[#bc1888]
-                     text-white font-bold text-base
-                     px-8 py-4 rounded-2xl
-                     hover:shadow-lg hover:shadow-pink-500/20
-                     transition-all active:scale-95 group"
-        >
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-          </svg>
-          Follow @lts_elite_prep
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </a>
-
-        {/* Grid of real training photos */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-10">
-          {[
-            { src: "/images/DSC00881.jpg", alt: "Layup training" },
-            { src: "/images/SBU02221.jpg", alt: "Dribble drills" },
-            { src: "/images/DSC03076.jpg", alt: "Team coaching" },
-            { src: "/images/SBU02146.jpg", alt: "Community" },
-          ].map((img, i) => (
-            <div
-              key={i}
-              className="aspect-square relative rounded-xl overflow-hidden
-                         border border-white/5
-                         hover:border-[#F97316]/20 transition-all cursor-pointer group"
-            >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 640px) 50vw, 25vw"
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 // ── CTA Banner ───────────────────────────────────────────────
 function CtaSection() {

@@ -34,9 +34,9 @@ function useReveal() {
 const STORY = {
   title: "Our Story",
   paragraphs: [
-    "LTS Elite Prep is a premier basketball development program dedicated to providing high-level training and mentorship to athletes in the Greater Vancouver area.",
-    "Founded by Paolo Labrador, our program focuses on technical mastery, game IQ, and personal growth. Whether you are a young athlete just starting out or a post-secondary player looking to refine your craft, we provide the tools and intensity required to succeed.",
-    "Our name says it all: Elite Prep. We prepare athletes not just for the next game, but for the next level — making the school team, earning a college scholarship, and beyond.",
+    "LTS Elite Prep started in 2020 with a simple idea: every young basketball player in Vancouver deserves access to quality coaching — not just the ones who can afford expensive academies.",
+    "Founded by Paolo Labrador, LTS grew from weekend sessions at a local gym to one of Vancouver's most dedicated basketball development programs. We're not the biggest — but we're the most invested in every single athlete who walks through our doors.",
+    "Our name says it all: Elite Prep. We prepare athletes not just for the next game, but for the next level — whether that's making the school team, earning a college scholarship, or simply falling in love with the sport.",
   ],
 };
 
@@ -66,44 +66,36 @@ const PACT = [
 const COACHES = [
   {
     name: "Paolo Labrador",
-    role: "Head Coach & Founder",
-    bio: "Assistant Coach for the Douglas College Royals MBB team (PacWest) and Senior Boys Head Coach at Magee Secondary School. Paolo has provided player development for pros (CEBL, Asia), NCAA, USports, and CCAA athletes. He also works with the BC Provincial teams (Basketball BC). His wide range of experience allows him to understand both long-term and short-term goal planning for athletes. 'It is my personal mission to ensure that my athletes achieve their goals.'",
+    role: "Founder & Head Coach",
+    bio: "Paolo is the heart and soul of LTS Elite Prep. As an Assistant Coach at Douglas College and Head Coach at Magee Secondary, he brings competitive coaching experience combined with a genuine, personal investment in every athlete's growth. He built LTS because he believes that passionate, purposeful coaching shouldn't be a luxury.",
     photo: "/images/DSC03301.jpg",
     initial: "PL",
     imageClass: "object-cover object-top scale-[1.1] origin-top",
-    highlights: [
-      "Douglas College Asst. Coach",
-      "Magee Secondary Head Coach",
-      "BC Provincial Team Coach",
-      "UPREP Basketball Head Coach",
-    ],
-  },
-  {
-    name: "Thomas Manganini",
-    role: "Junior Coach",
-    bio: "CTA West Alumni and SFU Red Leafs MBB. Thomas specializes in guard development and technical mastery required for high-level play.",
-    photo: "/images/IMG_1872.webp",
-    initial: "TM",
-    imageClass: "object-cover object-top scale-[1.0]",
-    highlights: ["CTA West Alumni", "SFU Red Leafs MBB"],
-  },
-  {
-    name: "Enrique Garcia",
-    role: "Junior Coach",
-    bio: "CTA West Alumni and UOttawa GeeGees MBB. Expert in defensive schemes and elite player development.",
-    photo: "/images/enrique-new.jpg",
-    initial: "EG",
-    imageClass: "object-cover object-top",
-    highlights: ["CTA West Alumni", "UOttawa GeeGees MBB"],
+    highlights: ["Douglas College Asst. Coach", "Magee Secondary Head Coach", "NCCP Certified"],
   },
   {
     name: "Mikyle Malabuyoc",
-    role: "Junior Coach",
-    bio: "SFU Red Leafs MBB. Former Vancouver Bandits and Western Mustangs player. Brings pro-level intensity and a genuine love for player development.",
+    role: "Coach",
     photo: "/images/mikyle-new.jpg",
     initial: "MM",
     imageClass: "object-cover object-top scale-[1.45] origin-top",
-    highlights: ["SFU Red Leafs MBB", "Former Vancouver Bandits"],
+    highlights: ["Vancouver Bandits (Pro)", "SFU Red Leafs Alumnus", "Guard Specialist"],
+  },
+  {
+    name: "Thomas Manganini",
+    role: "Coach",
+    photo: "/images/IMG_1872.webp",
+    initial: "TM",
+    imageClass: "object-cover object-top scale-[1.05]",
+    highlights: ["SFU Red Leafs Alumnus", "Guard Development", "Offensive Systems"],
+  },
+  {
+    name: "Enrique Garcia",
+    role: "Coach",
+    photo: "/images/enrique-new.jpg",
+    initial: "EG",
+    imageClass: "object-cover object-top",
+    highlights: ["UOttawa GeeGees Alumnus", "Defensive Specialist", "Player Development"],
   },
 ];
 

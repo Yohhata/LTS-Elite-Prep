@@ -39,8 +39,8 @@ const inter = Inter({
 // ── レイアウト ────────────────────────────────────────────────
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${anton.variable} ${inter.variable}`}>
-      <body className="min-h-screen flex flex-col bg-[#000000] text-white">
+    <html lang="en" className={`${anton.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col bg-[#000000] text-white" suppressHydrationWarning>
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
