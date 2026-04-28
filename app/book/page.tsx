@@ -23,13 +23,23 @@ const PAGE_HEADER = {
 const PROGRAMS = [
   {
     id: "futures",
-    name: "LTS Futures",
-    tagline: "Youth Development (Ages 8–14)",
+    name: "LTS Futures (Drop-in)",
+    tagline: "Elementary & Middle School ($75)",
   },
   {
     id: "high",
-    name: "LTS High",
-    tagline: "High School Elite (Ages 14–18)",
+    name: "LTS High (Drop-in)",
+    tagline: "High School Elite ($75)",
+  },
+  {
+    id: "pass-5",
+    name: "5-Session Pass",
+    tagline: "Flexible Growth ($299)",
+  },
+  {
+    id: "pass-10",
+    name: "10-Session Pass",
+    tagline: "Elite Commitment ($449)",
   },
   {
     id: "private",

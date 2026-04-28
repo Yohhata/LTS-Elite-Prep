@@ -31,10 +31,20 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""
     );
 
-    // Googleスプレッドシート（GAS）への連携を先に実行
+    // 金額マッピング
+    const priceMap: Record<string, string> = {
+      futures: "$75",
+      high: "$75",
+      "pass-5": "$299",
+      "pass-10": "$449",
+      private: "TBD",
+    };
+    const amount = priceMap[program] || "TBD";
+
+    // Googleスプレッドシート（GAS）への連携
     if (process.env.GOOGLE_WEBHOOK_URL) {
       try {
-        const gasResponse = await fetch(process.env.GOOGLE_WEBHOOK_URL, {
+        await fetch(process.env.GOOGLE_WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -42,15 +52,14 @@ export async function POST(request: Request) {
             email,
             phone: phone || "",
             program,
+            amount, // GAS側でインボイスに使用
             preferred_date: preferred_date || "",
             preferred_time: preferred_time || "",
             message: message || "",
             created_at: new Date().toISOString()
           }),
-          redirect: "follow" // GASはリダイレクトを返すため必須
+          redirect: "follow"
         });
-        const gasText = await gasResponse.text();
-        console.log("Sent data to Google Sheets Webhook. Response:", gasText);
       } catch (gasError) {
         console.error("GAS Webhook Error:", gasError);
       }
