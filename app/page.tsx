@@ -48,9 +48,9 @@ const STATS = [
 const PROGRAMS = [
   {
     id: "futures",
-    tag: "LTS Futures",
-    title: "LTS Futures",
-    ages: "Elementary & Middle School",
+    name: "LTS Futures",
+    tagline: "Elementary & Middle School",
+    badge: "LTS FUTURES",
     desc: "The foundation. We make basketball fun while building real skills that will carry players for life.",
     features: [
       "Dribbling, passing & shooting basics",
@@ -58,14 +58,15 @@ const PROGRAMS = [
       "Game IQ & court awareness",
       "Small group sessions",
     ],
-    emoji: null,
-    featured: false,
+    href: "/register",
+    cta: "REGISTER NOW",
   },
   {
     id: "high",
-    tag: "Most Popular",
-    title: "LTS High",
-    ages: "High School Athletes",
+    name: "LTS High",
+    tagline: "High School Athletes",
+    badge: "Most Popular",
+    featured: true,
     desc: "Where good players become great. We push you harder, film your reps, and build the competitive edge you need.",
     features: [
       "Advanced skill development",
@@ -73,13 +74,11 @@ const PROGRAMS = [
       "Competitive scrimmages",
       "College prep guidance",
     ],
-    emoji: null,
-    featured: true,
+    href: "/register",
+    cta: "TRAIN NOW",
   },
   {
     id: "college",
-    tag: "LTS College",
-    title: "LTS College",
     ages: "College-Level Athletes",
     desc: "High-intensity training for players ready to compete at the next level. No shortcuts.",
     features: [
@@ -436,21 +435,21 @@ function ProgramsSection() {
                     key={f}
                     className="flex items-center gap-2.5 text-sm text-white/60"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]/40 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
 
               <Link
-                href="/micro-academy"
+                href={program.href}
                 className={`block text-center font-black py-4 rounded-xl
                            text-sm transition-all ${program.featured
                     ? "btn-accent"
                     : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
                   }`}
               >
-                {program.featured ? "TRAIN NOW" : "LEARN MORE →"}
+                {program.cta}
               </Link>
             </div>
           ))}
