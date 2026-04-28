@@ -32,11 +32,6 @@ const PROGRAMS = [
     tagline: "High School Elite (Ages 14–18)",
   },
   {
-    id: "college",
-    name: "LTS College",
-    tagline: "College Prep (Ages 17–22)",
-  },
-  {
     id: "private",
     name: "1-on-1 Private Training",
     tagline: "Personalized Development",
@@ -50,8 +45,8 @@ const TIME_SLOTS = [
 ];
 
 const SUCCESS_MESSAGE = {
-  title: "You're all set! 🏀",
-  body: "We received your request and will reach out within 24 hours to confirm your session. Check your email for updates!",
+  title: "BOOKING REQUEST SENT",
+  body: "We received your request and will reach out within 24 hours to confirm your session. Check your email for updates.",
   btnText: "Book Another Session",
 };
 
@@ -59,7 +54,7 @@ const EMPTY_FORM: BookingInsert = {
   name: "",
   email: "",
   phone: "",
-  program: "trial",
+  program: "futures",
   preferred_date: "",
   preferred_time: "",
   message: "",

@@ -397,37 +397,23 @@ function ProgramsSection() {
                   : ""
                 }`}
             >
-              {/* Featured badge */}
-              {program.featured && (
+              {/* Badge */}
+              <div className="mb-6">
                 <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2
-                             bg-gradient-to-r from-[#F97316] to-[#EA580C]
-                             text-white text-xs font-extrabold
-                             px-4 py-1 rounded-full whitespace-nowrap"
+                  className={`text-[10px] font-black tracking-[0.2em] uppercase px-3 py-1.5 rounded-full border
+                    ${program.featured 
+                      ? "bg-white text-black border-white" 
+                      : "bg-white/5 text-white/40 border-white/10"}`}
                 >
-                  {program.tag}
+                  {program.badge}
                 </span>
-              )}
-
-              {/* Emoji + Tag */}
-              <div className="flex items-center gap-3 mb-5">
-                <span className="text-2xl">{program.emoji}</span>
-                {!program.featured && (
-                  <span
-                    className="text-xs font-extrabold uppercase tracking-widest
-                               border border-white/10 text-white/50
-                               px-3 py-1 rounded-full"
-                  >
-                    {program.tag}
-                  </span>
-                )}
               </div>
 
-              <h3 className="text-2xl font-extrabold mb-1">{program.title}</h3>
-              <p className="text-sm text-[#F97316]/60 font-medium mb-4">
-                {program.ages}
+              <h3 className="text-3xl font-extrabold mb-1">{program.name}</h3>
+              <p className="text-sm text-white/30 font-bold mb-4 uppercase tracking-wide">
+                {program.tagline}
               </p>
-              <p className="text-white/50 text-sm leading-relaxed mb-6">
+              <p className="text-white/50 text-sm leading-relaxed mb-8">
                 {program.desc}
               </p>
 
