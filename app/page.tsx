@@ -120,7 +120,7 @@ const COACHES = [
   {
     name: "Paolo Labrador",
     role: "Head Coach & Founder",
-    bio: "Asst. Coach at Douglas College · Head Coach at Magee Secondary. Paolo built LTS on one belief: every athlete deserves a coach who truly invests in them.",
+    bio: "Douglas College Royals MBB Asst. Coach · Magee Secondary Head Coach. “It is my personal mission to ensure that my athletes achieve their goals”",
     photo: "/images/DSC03301.jpg",
     initial: "PL",
     imageClass: "object-cover object-top scale-[1.1] origin-top",
@@ -128,7 +128,7 @@ const COACHES = [
   {
     name: "Mikyle Malabuyoc",
     role: "Coach",
-    bio: "Former Vancouver Bandits player. Mikyle brings pro-level intensity and a genuine love for player development.",
+    bio: "",
     photo: "/images/mikyle-new.jpg",
     initial: "MM",
     imageClass: "object-cover object-top scale-[1.45] origin-top",
@@ -136,7 +136,7 @@ const COACHES = [
   {
     name: "Thomas Manganini",
     role: "Coach",
-    bio: "Specializes in guard development and offensive systems. Thomas focuses on the technical mastery required for high-level play.",
+    bio: "",
     photo: "/images/IMG_1872.webp",
     initial: "TM",
     imageClass: "object-cover object-top scale-[1.0]",
@@ -144,7 +144,7 @@ const COACHES = [
   {
     name: "Enrique Garcia",
     role: "Coach",
-    bio: "Expert in defensive schemes and player development.",
+    bio: "",
     photo: "/images/enrique-new.jpg",
     initial: "EG",
     imageClass: "object-cover object-top",
@@ -500,46 +500,37 @@ function PactSection() {
                 key={letter}
                 style={{ transitionDelay: `${i * 60}ms` }}
                 className="reveal card card-warm bg-[#111] border border-white/7 rounded-2xl p-6"
-              >
-                <span
-                  className="text-5xl font-extrabold leading-none
-                             gradient-text"
-                >
-                  {letter}
-                </span>
-                <p className="font-extrabold text-lg mt-2 mb-1">{word}</p>
-                <p className="text-white/40 text-sm leading-relaxed">{desc}</p>
+                       <div className="relative aspect-[4/5] bg-[#111] flex items-center justify-center overflow-hidden">
+                {coach.photo ? (
+                  <Image
+                    src={coach.photo}
+                    alt={coach.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className={coach.imageClass || "object-cover object-top"}
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl font-extrabold text-white/10 uppercase">
+                      {coach.initial}
+                    </span>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-// ── Coaches ──────────────────────────────────────────────────
-function CoachesSection() {
-  return (
-    <section className="py-24 lg:py-32 bg-[#0a0a0a]">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        <div className="mb-14 reveal text-center">
-          <SectionLabel text="The Team" />
-          <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-            Coaches Who&rsquo;ve{" "}
-            <span className="gradient-text">Been There</span>
-          </h2>
-          <p className="text-white/40 mt-3 max-w-lg mx-auto">
-            Real players turned real coaches. They know what it takes.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {COACHES.map((coach, i) => (
-            <div
-              key={coach.name}
-              style={{ transitionDelay: `${i * 80}ms` }}
-              className="reveal card card-warm bg-[#111] border border-white/7 rounded-2xl overflow-hidden"
+              <div className="p-6">
+                <h3 className="font-extrabold text-xl">{coach.name}</h3>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 mt-1 mb-4">
+                  {coach.role}
+                </p>
+                {coach.bio && (
+                  <p className="text-white/60 text-xs leading-relaxed line-clamp-3">
+                    {coach.bio}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}card-warm bg-[#111] border border-white/7 rounded-2xl overflow-hidden"
             >
               {/* Photo area */}
               <div className="relative aspect-[4/5] bg-gradient-to-br from-[#161616] to-[#111]

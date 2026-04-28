@@ -67,35 +67,43 @@ const COACHES = [
   {
     name: "Paolo Labrador",
     role: "Founder & Head Coach",
-    bio: "Paolo is the heart and soul of LTS Elite Prep. As an Assistant Coach at Douglas College and Head Coach at Magee Secondary, he brings competitive coaching experience combined with a genuine, personal investment in every athlete's growth. He built LTS because he believes that passionate, purposeful coaching shouldn't be a luxury.",
+    bio: "He has provided player development and coaching for pros (CEBL, Asia), post secondary athletes (NCAA, USports, CCAA), high school athletes, as well as elementary school. He also works as a player development coach for the provincial teams in British Columbia (Basketball BC). This wide range of practice allows him to understand both long term and short term goal planning for athletes. “It is my personal mission to ensure that my athletes achieve their goals”",
     photo: "/images/DSC03301.jpg",
     initial: "PL",
     imageClass: "object-cover object-top scale-[1.1] origin-top",
-    highlights: ["Douglas College Asst. Coach", "Magee Secondary Head Coach", "NCCP Certified"],
+    highlights: [
+      "Douglas College Royals MBB Asst. Coach",
+      "Magee Secondary Senior Boys Head Coach",
+      "U16 BC Development Team Asst. Coach",
+      "UPREP Basketball Head Coach (AAU)",
+    ],
   },
   {
     name: "Mikyle Malabuyoc",
     role: "Coach",
+    bio: "",
     photo: "/images/mikyle-new.jpg",
     initial: "MM",
     imageClass: "object-cover object-top scale-[1.45] origin-top",
-    highlights: ["Vancouver Bandits (Pro)", "SFU Red Leafs Alumnus", "Guard Specialist"],
+    highlights: ["Vancouver Bandits (Pro)", "SFU Red Leafs MBB"],
   },
   {
     name: "Thomas Manganini",
     role: "Coach",
+    bio: "",
     photo: "/images/IMG_1872.webp",
     initial: "TM",
     imageClass: "object-cover object-top scale-[1.05]",
-    highlights: ["SFU Red Leafs Alumnus", "Guard Development", "Offensive Systems"],
+    highlights: ["SFU Red Leafs MBB", "CTA West Alumni"],
   },
   {
     name: "Enrique Garcia",
     role: "Coach",
+    bio: "",
     photo: "/images/enrique-new.jpg",
     initial: "EG",
     imageClass: "object-cover object-top",
-    highlights: ["UOttawa GeeGees Alumnus", "Defensive Specialist", "Player Development"],
+    highlights: ["UOttawa GeeGees MBB", "CTA West Alumni"],
   },
 ];
 
@@ -283,48 +291,50 @@ export default function AboutPage() {
                 <div className="flex flex-col md:flex-row">
                   {/* Photo */}
                   <div
-                    className="relative md:w-64 h-64 md:h-auto
-                               bg-gradient-to-br from-[#161616] to-[#111]
-                               flex items-center justify-center shrink-0 overflow-hidden"
+                    className="relative md:w-80 h-80 md:h-[450px]
+                               bg-[#111] shrink-0 overflow-hidden"
                   >
                     {coach.photo ? (
                       <Image
                         src={coach.photo}
                         alt={coach.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, 256px"
+                        sizes="(max-width: 768px) 100vw, 320px"
                         className={coach.imageClass || "object-cover object-top"}
                       />
                     ) : (
-                      <span
-                        className="w-24 h-24 rounded-full
-                                   bg-gradient-to-br from-[#F97316]/20 to-[#F97316]/5
-                                   border-2 border-[#F97316]/20
-                                   flex items-center justify-center
-                                   text-3xl font-extrabold text-[#F97316]/60"
-                      >
-                        {coach.initial}
-                      </span>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-4xl font-extrabold text-white/10">
+                          {coach.initial}
+                        </span>
+                      </div>
                     )}
                   </div>
 
                   {/* Info */}
-                  <div className="p-6 md:p-8 flex-1">
-                    <h3 className="text-2xl font-extrabold mb-1">
-                      {coach.name}
-                    </h3>
-                    <p className="text-sm font-bold uppercase tracking-wider text-[#F97316]/50 mb-4">
-                      {coach.role}
-                    </p>
-                    <p className="text-white/50 leading-relaxed mb-4">
-                      {coach.bio}
-                    </p>
+                  <div className="p-8 md:p-12 flex flex-col justify-center">
+                    <div className="mb-6">
+                      <h3 className="text-3xl font-extrabold mb-1">
+                        {coach.name}
+                      </h3>
+                      <p className="text-white/40 font-bold text-xs tracking-[0.2em] uppercase">
+                        {coach.role}
+                      </p>
+                    </div>
+
+                    {coach.bio && (
+                      <p className="text-white/60 leading-relaxed mb-8 max-w-2xl text-lg">
+                        {coach.bio}
+                      </p>
+                    )}
+
                     <div className="flex flex-wrap gap-2">
                       {coach.highlights.map((h) => (
                         <span
                           key={h}
-                          className="text-xs font-medium border border-white/8
-                                     text-white/40 rounded-full px-3 py-1"
+                          className="bg-white/5 border border-white/10 text-white/30
+                                     text-[10px] font-bold tracking-widest uppercase
+                                     px-3 py-1.5 rounded-md"
                         >
                           {h}
                         </span>
