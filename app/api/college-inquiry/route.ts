@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       // 管理者への通知
       await resend.emails.send({
         from: "LTS System <info@ltseliteprep.ca>",
-        to: "info@ltseliteprep.ca",
+        to: "yoshimasa@w-japan.net",
         subject: `NEW COLLEGE INQUIRY: ${name}`,
         html: `
           <h3>New College Level Inquiry</h3>
