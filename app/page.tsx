@@ -79,7 +79,9 @@ const PROGRAMS = [
   },
   {
     id: "college",
-    ages: "College-Level Athletes",
+    name: "LTS College",
+    tagline: "College-Level Athletes",
+    badge: "LTS COLLEGE",
     desc: "High-intensity training for players ready to compete at the next level. No shortcuts.",
     features: [
       "Elite-level conditioning",
@@ -87,8 +89,8 @@ const PROGRAMS = [
       "Data-driven performance tracking",
       "Recruiting support",
     ],
-    emoji: null,
-    featured: false,
+    href: "/college-contact",
+    cta: "INQUIRE NOW",
   },
 ];
 
