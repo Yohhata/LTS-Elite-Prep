@@ -249,10 +249,10 @@ export default function ProgramsPage() {
                                  rounded-xl px-4 py-3"
                     >
                       <div
-                        className="w-8 h-8 rounded-lg bg-[#F97316]/10
+                        className="w-8 h-8 rounded-lg bg-white/5
                                     flex items-center justify-center shrink-0"
                       >
-                        <Icon className="w-4 h-4 text-[#F97316]" />
+                        <Icon className="w-4 h-4 text-white/50" />
                       </div>
                       <span className="text-sm text-white/70">{text}</span>
                     </div>
@@ -328,50 +328,7 @@ export default function ProgramsPage() {
           </div>
         </div>
 
-        {/* Alumni Success */}
-        <div className="mt-16 reveal">
-          <div
-            className="bg-[#111] border border-white/7 rounded-3xl overflow-hidden"
-          >
-            <div className="flex flex-col md:flex-row">
-              <div className="relative md:w-80 h-64 md:h-auto shrink-0">
-                <Image
-                  src="/images/shadynn.jpg"
-                  alt="Shadynn - LTS Alumni, Canada Basketball"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 320px"
-                />
-              </div>
-              <div className="p-8 sm:p-10 flex-1 flex flex-col justify-center">
-                <span
-                  className="inline-flex items-center gap-2 w-fit
-                             text-xs font-semibold tracking-widest uppercase
-                             border border-[#F97316]/20 text-[#F97316]/70
-                             rounded-full px-3.5 py-1.5 mb-4"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]/50" />
-                  Alumni Spotlight
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold mb-3">
-                  Where LTS Athletes <span className="gradient-text">Go Next</span>
-                </h3>
-                <p className="text-white/50 leading-relaxed mb-4">
-                  Our athletes have gone on to represent at the highest levels, including
-                  Canada Basketball. LTS isn&rsquo;t just training — it&rsquo;s a launchpad.
-                </p>
-                <Link
-                  href="/book"
-                  className="btn-accent inline-flex items-center gap-2 w-fit
-                             font-bold px-6 py-3 rounded-xl group text-sm"
-                >
-                  Start Your Journey
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         {/* FAQ-style note */}
         <div className="mt-16 text-center reveal">
