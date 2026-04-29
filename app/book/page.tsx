@@ -126,8 +126,8 @@ function Calendar({ selectedDate, onSelect }: { selectedDate: string, onSelect: 
       </div>
 
       <div className="grid grid-cols-7 gap-1 text-center mb-2">
-        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-          <span key={d} className="text-[10px] font-black text-white/20 py-2">{d}</span>
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+          <span key={`${d}-${i}`} className="text-[10px] font-black text-white/20 py-2">{d}</span>
         ))}
       </div>
 
@@ -161,6 +161,90 @@ function Calendar({ selectedDate, onSelect }: { selectedDate: string, onSelect: 
   );
 }
 
+function Calendar({ 
+  selectedDate, 
+  onSelect, 
+  availableDates 
+}: { 
+  selectedDate: string, 
+  onSelect: (date: string) => void,
+  availableDates: string[]
+}) {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const daysInMonth = useMemo(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const date = new Date(year, month, 1);
+    const days = [];
+    
+    const firstDay = date.getDay();
+    for (let i = 0; i < firstDay; i++) days.push(null);
+    
+    while (date.getMonth() === month) {
+      days.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  }, [currentMonth]);
+
+  const monthName = currentMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+
+  const isSelected = (date: Date) => {
+    if (!selectedDate) return false;
+    return date.toISOString().split('T')[0] === selectedDate;
+  };
+
+  const hasClass = (date: Date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return availableDates.includes(dateStr);
+  };
+
+  return (
+    <div className="bg-[#111] border border-white/5 rounded-2xl overflow-hidden p-6">
+      <div className="flex items-center justify-between mb-6 px-2">
+        <h3 className="font-bold text-white uppercase tracking-widest text-xs">{monthName}</h3>
+        <div className="flex gap-1">
+          <button onClick={prevMonth} type="button" className="p-2 hover:bg-white/5 rounded-lg text-white/40 transition-all"><ChevronLeft className="w-4 h-4" /></button>
+          <button onClick={nextMonth} type="button" className="p-2 hover:bg-white/5 rounded-lg text-white/40 transition-all"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center mb-2">
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+          <span key={`${d}-${i}`} className="text-[10px] font-black text-white/20 py-2">{d}</span>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {daysInMonth.map((date, i) => {
+          if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
+          const dateStr = date.toISOString().split('T')[0];
+          const active = hasClass(date);
+          const selected = isSelected(date);
+
+          return (
+            <button
+              key={dateStr}
+              type="button"
+              onClick={() => onSelect(dateStr)}
+              className={`aspect-square rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center relative
+                ${selected ? 'bg-white text-black' : 'text-white hover:bg-white/5'}
+                ${!active && !selected ? 'opacity-20' : ''}
+              `}
+            >
+              {date.getDate()}
+              {active && !selected && <span className="absolute bottom-2 w-1 h-1 rounded-full bg-white animate-pulse" />}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── ページ本体 ────────────────────────────────────────────────
 
 export default function BookPage() {
@@ -175,12 +259,29 @@ function BookPageInner() {
   const searchParams = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(1);
+  const [classes, setClasses] = useState<any[]>([]);
   const [form, setForm] = useState<BookingInsert>({
     ...EMPTY_FORM,
     program: (searchParams.get("program") as any) || "futures",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Fetch classes
+  useEffect(() => {
+    async function getClasses() {
+      const { data } = await supabase.from("classes").select("*");
+      if (data) setClasses(data);
+    }
+    getClasses();
+  }, []);
+
+  const availableDates = useMemo(() => classes.map(c => c.class_date), [classes]);
+  
+  const selectedDayClasses = useMemo(() => {
+    if (!form.preferred_date) return [];
+    return classes.filter(c => c.class_date === form.preferred_date);
+  }, [form.preferred_date, classes]);
 
   const TOTAL_STEPS = 3;
 
@@ -192,10 +293,7 @@ function BookPageInner() {
     }
 
     setLoading(true);
-    setError("");
-
     try {
-      // 1. Supabase insert
       await supabase.from("bookings").insert({
         name: form.name,
         email: form.email,
@@ -206,44 +304,31 @@ function BookPageInner() {
         message: form.message || null,
       });
 
-      // 2. GAS Webhook ( Gmail / Spreadsheet )
       const gasUrl = process.env.NEXT_PUBLIC_GOOGLE_WEBHOOK_URL; 
       if (gasUrl) {
         const priceMap: any = { futures: "$75", high: "$75", "pass-5": "$299", "pass-10": "$449", private: "TBD" };
-        await fetch(gasUrl, {
+        fetch(gasUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...form,
-            amount: priceMap[form.program] || "TBD",
-            created_at: new Date().toISOString()
-          }),
+          body: JSON.stringify({ ...form, amount: priceMap[form.program] || "TBD" }),
           mode: 'no-cors'
         });
       }
-
       setSubmitted(true);
     } catch (err) {
-      console.error(err);
-      setError("Failed to book. Please check your connection or contact info@ltseliteprep.ca");
+      setError("Failed to book. Please contact info@ltseliteprep.ca");
       setLoading(false);
     }
   }
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#000] flex items-center justify-center px-5">
-        <div className="text-center max-w-md reveal">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
-            <Check className="w-10 h-10 text-black" />
-          </div>
-          <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Request Sent</h2>
-          <p className="text-white/40 leading-relaxed mb-10">
-            We've received your booking request. Check your email for the confirmation and payment instructions.
-          </p>
-          <Link href="/" className="btn-accent inline-flex items-center gap-2 font-bold px-10 py-4 rounded-2xl">
-            BACK TO HOME
-          </Link>
+      <div className="min-h-screen bg-black flex items-center justify-center px-5">
+        <div className="text-center max-w-md">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8"><Check className="w-10 h-10 text-black" /></div>
+          <h2 className="text-4xl font-black mb-4 uppercase">Request Sent</h2>
+          <p className="text-white/40 mb-10 leading-relaxed">We've received your booking. Check your email for payment instructions.</p>
+          <Link href="/" className="bg-white text-black font-bold px-10 py-4 rounded-2xl">BACK TO HOME</Link>
         </div>
       </div>
     );
@@ -252,15 +337,9 @@ function BookPageInner() {
   return (
     <div className="min-h-screen bg-black pt-32 pb-20 px-5">
       <div className="max-w-xl mx-auto">
-        
-        {/* Header */}
         <div className="mb-12 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-white/30 hover:text-white text-xs font-bold uppercase tracking-widest mb-10 transition-all">
-            <ArrowLeft className="w-3 h-3" /> Back
-          </Link>
-          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter leading-none">
-            Book <span className="text-white/20">Session</span>
-          </h1>
+          <Link href="/" className="inline-flex items-center gap-2 text-white/30 hover:text-white text-xs font-bold uppercase mb-10 transition-all"><ArrowLeft className="w-3 h-3" /> Back</Link>
+          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter">Book <span className="text-white/20">Session</span></h1>
           <div className="flex items-center justify-center gap-4">
             {[1, 2, 3].map(s => (
               <div key={s} className={`h-1 rounded-full transition-all duration-500 ${step >= s ? 'w-12 bg-white' : 'w-4 bg-white/10'}`} />
@@ -269,115 +348,75 @@ function BookPageInner() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          
-          {/* STEP 1: Basic Info */}
           {step === 1 && (
-            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4">
               <div>
-                <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-2 block">Full Name</label>
-                <input 
-                  required type="text" placeholder="JORDAN SMITH"
-                  value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                  className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold focus:border-white/20 outline-none transition-all"
-                />
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Full Name</label>
+                <input required type="text" placeholder="JORDAN SMITH" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
               </div>
               <div>
-                <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-2 block">Email Address</label>
-                <input 
-                  required type="email" placeholder="JORDAN@EXAMPLE.COM"
-                  value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                  className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold focus:border-white/20 outline-none transition-all"
-                />
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Email Address</label>
+                <input required type="email" placeholder="JORDAN@EXAMPLE.COM" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
               </div>
-              <button 
-                type="button" onClick={() => form.name && form.email && setStep(2)}
-                className="w-full bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/90 active:scale-95 transition-all mt-4"
-              >
-                NEXT STEP <ArrowRight className="w-5 h-5" />
-              </button>
+              <button type="button" onClick={() => form.name && form.email && setStep(2)} className="w-full bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 mt-4">NEXT STEP <ArrowRight className="w-5 h-5" /></button>
             </div>
           )}
 
-          {/* STEP 2: Program selection */}
           {step === 2 && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-2 block">Select Program</label>
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
+              <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Select Program</label>
               <div className="grid grid-cols-1 gap-3">
                 {PROGRAMS.map(p => (
-                  <button
-                    key={p.id} type="button"
-                    onClick={() => setForm({...form, program: p.id as any})}
-                    className={`text-left p-6 rounded-2xl border transition-all ${form.program === p.id ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}
-                  >
+                  <button key={p.id} type="button" onClick={() => setForm({...form, program: p.id as any})} className={`text-left p-6 rounded-2xl border transition-all ${form.program === p.id ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}>
                     <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-black text-lg leading-none mb-1 uppercase tracking-tight">{p.name}</h4>
-                        <p className={`text-xs ${form.program === p.id ? 'text-black/60' : 'text-white/20'}`}>{p.tagline}</p>
-                      </div>
+                      <h4 className="font-black text-lg uppercase tracking-tight">{p.name}</h4>
                       {form.program === p.id && <Check className="w-5 h-5" />}
                     </div>
                   </button>
                 ))}
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5 hover:text-white transition-all">BACK</button>
-                <button type="button" onClick={() => setStep(3)} className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">CHOOSE DATE <ArrowRight className="w-5 h-5" /></button>
+                <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
+                <button type="button" onClick={() => setStep(3)} className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2">CHOOSE DATE <ArrowRight className="w-5 h-5" /></button>
               </div>
             </div>
           )}
 
-          {/* STEP 3: Date & Time selection */}
           {step === 3 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="grid grid-cols-1 gap-6">
-                <div>
-                  <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-3 block flex items-center gap-2">
-                    <CalendarIcon className="w-3 h-3" /> Select Date
-                  </label>
-                  <Calendar 
-                    selectedDate={form.preferred_date || ""} 
-                    onSelect={date => setForm({...form, preferred_date: date})} 
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-3 block flex items-center gap-2">
-                    <Clock className="w-3 h-3" /> Preferred Time
-                  </label>
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+              <div>
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><CalendarIcon className="w-3 h-3" /> Available Classes</label>
+                <Calendar selectedDate={form.preferred_date || ""} onSelect={date => setForm({...form, preferred_date: date})} availableDates={availableDates} />
+              </div>
+              
+              {form.preferred_date && (
+                <div className="animate-in fade-in slide-in-from-top-2">
+                  <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><Clock className="w-3 h-3" /> Available Time</label>
                   <div className="grid grid-cols-1 gap-2">
-                    {TIME_SLOTS.map(t => (
-                      <button
-                        key={t} type="button"
-                        onClick={() => setForm({...form, preferred_time: t})}
-                        className={`text-left px-5 py-4 rounded-xl border text-sm font-bold transition-all ${form.preferred_time === t ? 'bg-white text-black border-white' : 'bg-[#111] text-white/40 border-white/5 hover:border-white/10'}`}
-                      >
-                        {t}
-                      </button>
-                    ))}
+                    {selectedDayClasses.length > 0 ? (
+                      selectedDayClasses.map(c => (
+                        <button key={c.id} type="button" onClick={() => setForm({...form, preferred_time: `${c.start_time} - ${c.end_time}`})} className={`text-left px-5 py-4 rounded-xl border text-sm font-bold transition-all ${form.preferred_time === `${c.start_time} - ${c.end_time}` ? 'bg-white text-black border-white' : 'bg-[#111] text-white/40 border-white/5 hover:border-white/10'}`}>
+                          {c.start_time.slice(0,5)} - {c.end_time.slice(0,5)} ({c.title})
+                        </button>
+                      ))
+                    ) : (
+                      <p className="text-white/20 text-xs font-bold uppercase tracking-widest text-center py-4 border border-dashed border-white/10 rounded-xl">No classes scheduled for this date</p>
+                    )}
                   </div>
                 </div>
-              </div>
-
-              {error && <p className="text-red-500 text-xs font-bold text-center">{error}</p>}
+              )}
 
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setStep(2)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5 hover:text-white transition-all">BACK</button>
-                <button 
-                  type="submit" disabled={!form.preferred_date || !form.preferred_time || loading}
-                  className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-30 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)]"
-                >
+                <button type="button" onClick={() => setStep(2)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
+                <button type="submit" disabled={!form.preferred_date || !form.preferred_time || loading} className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-30">
                   {loading ? 'SENDING...' : 'CONFIRM BOOKING'}
-                  {!loading && <ArrowRight className="w-5 h-5" />}
                 </button>
               </div>
             </div>
           )}
-
         </form>
-
-        <p className="mt-12 text-center text-[10px] font-black text-white/10 uppercase tracking-[0.3em]">
-          Professional Development &copy; {new Date().getFullYear()}
-        </p>
       </div>
     </div>
   );
 }
+
