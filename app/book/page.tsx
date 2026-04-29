@@ -276,10 +276,6 @@ function BookPageInner() {
               <div className="grid grid-cols-1 gap-3">
                 {PROGRAMS.map(p => (
                   <button key={p.id} type="button" onClick={() => {
-                      if (p.id === 'pass-5' || p.id === 'pass-10') {
-                        window.location.href = `/register?program=${p.id}`;
-                        return;
-                      }
                       setForm({...form, program: p.id as any});
                     }} className={`text-left p-6 rounded-2xl border transition-all ${form.program === p.id ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}>
                     <div className="flex items-center justify-between">
@@ -291,39 +287,73 @@ function BookPageInner() {
               </div>
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
-                <button type="button" onClick={() => setStep(3)} className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2">CHOOSE DATE <ArrowRight className="w-5 h-5" /></button>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    if (form.program === 'pass-5' || form.program === 'pass-10') {
+                      // Skip step 3 (calendar) and proceed to confirm
+                      // We'll handle the submission differently in step 3 or by adding a final confirmation here
+                      setStep(3); 
+                    } else {
+                      setStep(3);
+                    }
+                  }} 
+                  className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2"
+                >
+                  {form.program === 'pass-5' || form.program === 'pass-10' ? 'PROCEED' : 'CHOOSE DATE'} 
+                  <ArrowRight className="w-5 h-5" />
+                </button>
               </div>
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-              <div>
-                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><CalendarIcon className="w-3 h-3" /> Available Classes</label>
-                <Calendar selectedDate={form.preferred_date || ""} onSelect={date => setForm({...form, preferred_date: date})} availableDates={availableDates} />
-              </div>
-              
-              {form.preferred_date && (
-                <div className="animate-in fade-in slide-in-from-top-2">
-                  <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><Clock className="w-3 h-3" /> Available Time</label>
-                  <div className="grid grid-cols-1 gap-2">
-                    {selectedDayClasses.length > 0 ? (
-                      selectedDayClasses.map(c => (
-                        <button key={c.id} type="button" onClick={() => setForm({...form, preferred_time: `${c.start_time} - ${c.end_time}`})} className={`text-left px-5 py-4 rounded-xl border text-sm font-bold transition-all ${form.preferred_time === `${c.start_time} - ${c.end_time}` ? 'bg-white text-black border-white' : 'bg-[#111] text-white/40 border-white/5 hover:border-white/10'}`}>
-                          {c.start_time.slice(0,5)} - {c.end_time.slice(0,5)} ({c.title})
-                        </button>
-                      ))
-                    ) : (
-                      <p className="text-white/20 text-xs font-bold uppercase tracking-widest text-center py-4 border border-dashed border-white/10 rounded-xl">No classes scheduled for this date</p>
-                    )}
+              {(form.program === 'pass-5' || form.program === 'pass-10') ? (
+                <div className="text-center py-10 bg-[#111] border border-white/5 rounded-3xl">
+                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 className="w-8 h-8 text-white" />
                   </div>
+                  <h3 className="text-2xl font-black mb-2 uppercase">Ready to Purchase?</h3>
+                  <p className="text-white/40 text-sm mb-8 px-10">
+                    You are purchasing a <span className="text-white font-bold">{form.program === 'pass-5' ? '5-Session Pass' : '10-Session Pass'}</span>. 
+                    An invoice will be sent to your email shortly.
+                  </p>
                 </div>
+              ) : (
+                <>
+                  <div>
+                    <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><CalendarIcon className="w-3 h-3" /> Available Classes</label>
+                    <Calendar selectedDate={form.preferred_date || ""} onSelect={date => setForm({...form, preferred_date: date})} availableDates={availableDates} />
+                  </div>
+                  
+                  {form.preferred_date && (
+                    <div className="animate-in fade-in slide-in-from-top-2">
+                      <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><Clock className="w-3 h-3" /> Available Time</label>
+                      <div className="grid grid-cols-1 gap-2">
+                        {selectedDayClasses.length > 0 ? (
+                          selectedDayClasses.map(c => (
+                            <button key={c.id} type="button" onClick={() => setForm({...form, preferred_time: `${c.start_time} - ${c.end_time}`})} className={`text-left px-5 py-4 rounded-xl border text-sm font-bold transition-all ${form.preferred_time === `${c.start_time} - ${c.end_time}` ? 'bg-white text-black border-white' : 'bg-[#111] text-white/40 border-white/5 hover:border-white/10'}`}>
+                              {c.start_time.slice(0,5)} - {c.end_time.slice(0,5)} ({c.title})
+                            </button>
+                          ))
+                        ) : (
+                          <p className="text-white/20 text-xs font-bold uppercase tracking-widest text-center py-4 border border-dashed border-white/10 rounded-xl">No classes scheduled for this date</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setStep(2)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
-                <button type="submit" disabled={!form.preferred_date || !form.preferred_time || loading} className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-30">
-                  {loading ? 'SENDING...' : 'CONFIRM BOOKING'}
+                <button 
+                  type="submit" 
+                  disabled={((form.program !== 'pass-5' && form.program !== 'pass-10') && (!form.preferred_date || !form.preferred_time)) || loading} 
+                  className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-30"
+                >
+                  {loading ? 'SENDING...' : (form.program === 'pass-5' || form.program === 'pass-10' ? 'CONFIRM PURCHASE' : 'CONFIRM BOOKING')}
                 </button>
               </div>
             </div>
