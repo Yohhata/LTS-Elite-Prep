@@ -280,11 +280,11 @@ export default function ProgramsPage() {
                 {/* CTA */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link
-                    href="/micro-academy"
+                    href={program.id === 'college' ? '/college-contact' : `/book?program=${program.id}`}
                     className="btn-accent inline-flex items-center justify-center gap-2
                                font-bold px-8 py-3.5 rounded-xl group"
                   >
-                    TRAIN NOW
+                    {program.id === 'college' ? 'INQUIRE NOW' : 'TRAIN NOW'}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <span className="text-sm text-white/30 flex items-center">
