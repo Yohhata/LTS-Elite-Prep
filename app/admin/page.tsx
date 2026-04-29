@@ -110,7 +110,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        
+
         {/* Header & Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -121,21 +121,19 @@ function Dashboard() {
               Manage your bookings and schedule
             </p>
           </div>
-          
+
           <div className="flex bg-[#111] p-1 rounded-xl border border-white/10">
             <button
               onClick={() => setActiveTab("bookings")}
-              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                activeTab === "bookings" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
-              }`}
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "bookings" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+                }`}
             >
               Bookings
             </button>
             <button
               onClick={() => setActiveTab("schedule")}
-              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                activeTab === "schedule" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
-              }`}
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "schedule" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+                }`}
             >
               Schedule
             </button>
@@ -227,96 +225,91 @@ function BookingsTab() {
 
   return (
     <div>
-      <div className="flex justify-end mb-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <StatCard
+          icon={Users}
+          label="Total"
+          value={counts.total}
+          color="text-white"
+          bg="bg-white/5"
+        />
+        <StatCard
+          icon={Clock}
+          label="Pending"
+          value={counts.pending}
+          color="text-yellow-400"
+          bg="bg-yellow-400/5"
+        />
+        <StatCard
+          icon={CheckCircle}
+          label="Confirmed"
+          value={counts.confirmed}
+          color="text-green-400"
+          bg="bg-green-400/5"
+        />
+        <StatCard
+          icon={XCircle}
+          label="Cancelled"
+          value={counts.cancelled}
+          color="text-red-400"
+          bg="bg-red-400/5"
+        />
+      </div>
 
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <StatCard
-            icon={Users}
-            label="Total"
-            value={counts.total}
-            color="text-white"
-            bg="bg-white/5"
-          />
-          <StatCard
-            icon={Clock}
-            label="Pending"
-            value={counts.pending}
-            color="text-yellow-400"
-            bg="bg-yellow-400/5"
-          />
-          <StatCard
-            icon={CheckCircle}
-            label="Confirmed"
-            value={counts.confirmed}
-            color="text-green-400"
-            bg="bg-green-400/5"
-          />
-          <StatCard
-            icon={XCircle}
-            label="Cancelled"
-            value={counts.cancelled}
-            color="text-red-400"
-            bg="bg-red-400/5"
-          />
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-            <input
-              type="text"
-              placeholder="Search by name, email, or program..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#111] border border-white/8 text-white
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+          <input
+            type="text"
+            placeholder="Search by name, email, or program..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#111] border border-white/8 text-white
                          placeholder-white/20 rounded-xl pl-10 pr-4 py-2.5 text-sm
                          focus:outline-none focus:border-[#F97316]/40 transition-all"
-            />
-          </div>
-
-          {/* Status filter buttons */}
-          <div className="flex gap-2">
-            {(["all", "pending", "confirmed", "cancelled"] as const).map(
-              (status) => (
-                <button
-                  key={status}
-                  onClick={() => setStatusFilter(status)}
-                  className={`text-xs font-semibold px-3 py-2 rounded-lg capitalize
-                             transition-all ${
-                               statusFilter === status
-                                 ? "bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20"
-                                 : "text-white/30 hover:text-white/50 border border-white/5"
-                             }`}
-                >
-                  {status}
-                </button>
-              )
-            )}
-          </div>
+          />
         </div>
 
-        {/* Booking List */}
-        {filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <Filter className="w-8 h-8 text-white/10 mx-auto mb-3" />
-            <p className="text-white/30">No bookings found</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filtered.map((booking) => (
-              <BookingCard
-                key={booking.id}
-                booking={booking}
-                onUpdateStatus={updateStatus}
-              />
-            ))}
-          </div>
-        )}
+        {/* Status filter buttons */}
+        <div className="flex gap-2">
+          {(["all", "pending", "confirmed", "cancelled"] as const).map(
+            (status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`text-xs font-semibold px-3 py-2 rounded-lg capitalize
+                             transition-all ${statusFilter === status
+                    ? "bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20"
+                    : "text-white/30 hover:text-white/50 border border-white/5"
+                  }`}
+              >
+                {status}
+              </button>
+            )
+          )}
+        </div>
       </div>
+
+      {/* Booking List */}
+      {filtered.length === 0 ? (
+        <div className="text-center py-20">
+          <Filter className="w-8 h-8 text-white/10 mx-auto mb-3" />
+          <p className="text-white/30">No bookings found</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((booking) => (
+            <BookingCard
+              key={booking.id}
+              booking={booking}
+              onUpdateStatus={updateStatus}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -379,7 +372,7 @@ function ScheduleTab() {
 
   async function handleDeleteClass(id: string) {
     if (!confirm("Are you sure you want to delete this class?")) return;
-    
+
     const res = await fetch(`/api/admin/classes?id=${id}&password=${ADMIN_PASSWORD}`, {
       method: "DELETE",
     });
@@ -455,20 +448,20 @@ function ScheduleTab() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {classes.map((c) => (
             <div key={c.id} className="bg-[#111] border border-white/10 rounded-2xl p-5 relative group">
-              <button 
+              <button
                 onClick={() => handleDeleteClass(c.id)}
                 className="absolute top-4 right-4 text-white/20 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
-              
+
               <div className="text-xs font-bold text-[#F97316] tracking-widest uppercase mb-1">
                 {c.class_date}
               </div>
               <h3 className="font-bold text-lg mb-2 truncate pr-6">{c.title}</h3>
-              
+
               <div className="flex flex-col gap-1.5 mt-4">
-                <DetailRow icon={Clock} label="Time" value={`${c.start_time.slice(0,5)} - ${c.end_time.slice(0,5)}`} />
+                <DetailRow icon={Clock} label="Time" value={`${c.start_time.slice(0, 5)} - ${c.end_time.slice(0, 5)}`} />
                 <DetailRow icon={Users} label="Coach" value={c.coach || "TBA"} />
                 <DetailRow icon={TrendingUp} label="Spots" value={`${c.capacity - c.booked_count} available`} />
               </div>

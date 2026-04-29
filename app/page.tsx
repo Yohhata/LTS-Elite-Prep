@@ -293,7 +293,7 @@ function HeroSection() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-up delay-500">
           <Link
-            href="/micro-academy"
+            href="/book"
             className="group flex items-center justify-center gap-2
                        btn-accent font-black text-lg
                        px-10 py-5 rounded-2xl active:scale-95"
@@ -638,7 +638,7 @@ function CtaSection() {
         </p>
 
         <Link
-          href="/micro-academy"
+          href="/book"
           className="inline-flex items-center gap-3
                      btn-accent font-black text-xl
                      px-12 py-6 rounded-2xl active:scale-95 group"

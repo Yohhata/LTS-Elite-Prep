@@ -24,7 +24,7 @@ const NAV_LINKS = [
 ];
 
 const CTA = {
-  href: "/micro-academy",
+  href: "/book",
   label: "TRAIN NOW",
 };
 
