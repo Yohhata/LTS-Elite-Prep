@@ -275,7 +275,13 @@ function BookPageInner() {
               <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Select Program</label>
               <div className="grid grid-cols-1 gap-3">
                 {PROGRAMS.map(p => (
-                  <button key={p.id} type="button" onClick={() => setForm({...form, program: p.id as any})} className={`text-left p-6 rounded-2xl border transition-all ${form.program === p.id ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}>
+                  <button key={p.id} type="button" onClick={() => {
+                      if (p.id === 'pass-5' || p.id === 'pass-10') {
+                        window.location.href = `/register?program=${p.id}`;
+                        return;
+                      }
+                      setForm({...form, program: p.id as any});
+                    }} className={`text-left p-6 rounded-2xl border transition-all ${form.program === p.id ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}>
                     <div className="flex items-center justify-between">
                       <h4 className="font-black text-lg uppercase tracking-tight">{p.name}</h4>
                       {form.program === p.id && <Check className="w-5 h-5" />}
