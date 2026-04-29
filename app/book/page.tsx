@@ -1,24 +1,26 @@
 // ============================================================
 // 予約フォームページ (app/book/page.tsx)
-// サイト内完結の予約フォーム（スマホ最適化）
+// カレンダー機能統合・ステップ形式予約フロー
 // ============================================================
 
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase, type BookingInsert } from "@/lib/supabase";
-import { ArrowRight, CheckCircle, ArrowLeft, Check } from "lucide-react";
+import { 
+  ArrowRight, 
+  CheckCircle, 
+  ArrowLeft, 
+  Check, 
+  ChevronLeft, 
+  ChevronRight, 
+  Calendar as CalendarIcon,
+  Clock
+} from "lucide-react";
 
 // ── 設定データ ────────────────────────────────────────────────
-
-const PAGE_HEADER = {
-  badge: "Session Booking",
-  title: "Book Your Session",
-  subtitle:
-    "Fill in the form and we'll reach out within 24 hours to confirm your spot. No payment required.",
-};
 
 const PROGRAMS = [
   {
@@ -54,12 +56,6 @@ const TIME_SLOTS = [
   "Evening (4pm – 8pm)",
 ];
 
-const SUCCESS_MESSAGE = {
-  title: "BOOKING REQUEST SENT",
-  body: "We received your request and will reach out within 24 hours to confirm your session. Check your email for updates.",
-  btnText: "Book Another Session",
-};
-
 const EMPTY_FORM: BookingInsert = {
   name: "",
   email: "",
@@ -70,21 +66,108 @@ const EMPTY_FORM: BookingInsert = {
   message: "",
 };
 
+// ── カレンダーコンポーネント ───────────────────────────────────
+
+function Calendar({ selectedDate, onSelect }: { selectedDate: string, onSelect: (date: string) => void }) {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const daysInMonth = useMemo(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const date = new Date(year, month, 1);
+    const days = [];
+    
+    // Fill leading empty slots
+    const firstDay = date.getDay();
+    for (let i = 0; i < firstDay; i++) days.push(null);
+    
+    // Fill actual days
+    while (date.getMonth() === month) {
+      days.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  }, [currentMonth]);
+
+  const monthName = currentMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+
+  const isSelected = (date: Date) => {
+    if (!selectedDate) return false;
+    const d = new Date(date);
+    const s = new Date(selectedDate);
+    return d.toDateString() === s.toDateString();
+  };
+
+  const isToday = (date: Date) => {
+    return date.toDateString() === new Date().toDateString();
+  };
+
+  const isPast = (date: Date) => {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    return date < today;
+  };
+
+  return (
+    <div className="bg-[#111] border border-white/5 rounded-2xl overflow-hidden p-6">
+      <div className="flex items-center justify-between mb-6 px-2">
+        <h3 className="font-bold text-white uppercase tracking-widest text-xs">{monthName}</h3>
+        <div className="flex gap-1">
+          <button onClick={prevMonth} type="button" className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-all">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button onClick={nextMonth} type="button" className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-all">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center mb-2">
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
+          <span key={d} className="text-[10px] font-black text-white/20 py-2">{d}</span>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {daysInMonth.map((date, i) => {
+          if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
+          
+          const disabled = isPast(date);
+          const selected = isSelected(date);
+          const today = isToday(date);
+
+          return (
+            <button
+              key={date.toISOString()}
+              type="button"
+              disabled={disabled}
+              onClick={() => onSelect(date.toISOString().split('T')[0])}
+              className={`aspect-square rounded-xl text-xs font-bold transition-all flex items-center justify-center relative
+                ${disabled ? 'text-white/5 cursor-not-allowed' : 'text-white hover:bg-white/5'}
+                ${selected ? 'bg-white text-black hover:bg-white' : ''}
+                ${today && !selected ? 'text-white' : ''}
+              `}
+            >
+              {date.getDate()}
+              {today && !selected && <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/20" />}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── ページ本体 ────────────────────────────────────────────────
 
 export default function BookPage() {
   return (
-    <Suspense fallback={<BookPageLoading />}>
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
       <BookPageInner />
     </Suspense>
-  );
-}
-
-function BookPageLoading() {
-  return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-28 pb-24 flex items-center justify-center">
-      <span className="w-8 h-8 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
-    </div>
   );
 }
 
@@ -92,109 +175,28 @@ function BookPageInner() {
   const searchParams = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(1);
-
-  // URL パラメータでプログラムを自動選択
-  const preselectedProgram = searchParams.get("program") || "futures";
-
-  if (submitted) {
-    return <SuccessMessage onReset={() => setSubmitted(false)} />;
-  }
-
-  return (
-    <div className="min-h-screen bg-[#000000] pt-28 pb-24">
-      <div className="max-w-lg mx-auto px-5 sm:px-8">
-        {/* 戻るリンク */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-white/30
-                     hover:text-white/60 transition-colors mb-8 group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          Back to Home
-        </Link>
-
-        {/* ページヘッダー */}
-        <div className="mb-10 text-center">
-          <span
-            className="inline-flex items-center gap-2
-                       text-xs font-semibold tracking-widest uppercase
-                       border border-white/10 text-white/50
-                       rounded-full px-3.5 py-1.5 mb-5"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
-            {PAGE_HEADER.badge}
-          </span>
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
-            Book Your <span className="text-white">Session</span>
-          </h1>
-          <p className="text-white/40 text-lg max-w-xl mx-auto">
-            {PAGE_HEADER.subtitle}
-          </p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-full h-1 bg-white/5 rounded-full mb-8 overflow-hidden">
-          <div
-            className={`h-full bg-white transition-all duration-500`}
-            style={{ width: `${(step / 2) * 100}%` }}
-          />
-        </div>
-        <div className="flex justify-between mb-10 px-1">
-          {[1, 2].map((s) => (
-            <span
-              key={s}
-              className={`text-[10px] font-bold tracking-widest uppercase transition-colors
-                             ${step >= s ? "text-white" : "text-white/20"}`}
-            >
-              Step 0{s}
-            </span>
-          ))}
-        </div>
-
-        {/* 予約フォーム */}
-        <BookingForm
-          initialProgram={preselectedProgram}
-          onSuccess={() => setSubmitted(true)}
-          onStepChange={setStep}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ── 予約フォーム ──────────────────────────────────────────────
-
-function BookingForm({
-  initialProgram,
-  onSuccess,
-  onStepChange,
-}: {
-  initialProgram: string;
-  onSuccess: () => void;
-  onStepChange: (step: number) => void;
-}) {
   const [form, setForm] = useState<BookingInsert>({
     ...EMPTY_FORM,
-    program: (initialProgram as BookingInsert["program"]) || "trial",
+    program: (searchParams.get("program") as any) || "futures",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
+  const TOTAL_STEPS = 3;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (step < TOTAL_STEPS) {
+      setStep(step + 1);
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const { error: dbError } = await supabase.from("bookings").insert({
+      // 1. Supabase insert
+      await supabase.from("bookings").insert({
         name: form.name,
         email: form.email,
         phone: form.phone || null,
@@ -204,215 +206,178 @@ function BookingForm({
         message: form.message || null,
       });
 
-      if (dbError) throw dbError;
-      onSuccess();
+      // 2. GAS Webhook ( Gmail / Spreadsheet )
+      const gasUrl = process.env.NEXT_PUBLIC_GOOGLE_WEBHOOK_URL; 
+      if (gasUrl) {
+        const priceMap: any = { futures: "$75", high: "$75", "pass-5": "$299", "pass-10": "$449", private: "TBD" };
+        await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...form,
+            amount: priceMap[form.program] || "TBD",
+            created_at: new Date().toISOString()
+          }),
+          mode: 'no-cors'
+        });
+      }
+
+      setSubmitted(true);
     } catch (err) {
-      console.error("Booking error:", err);
-      setError(
-        "Something went wrong. Please email us directly at info@ltseliteprep.ca"
-      );
+      console.error(err);
+      setError("Failed to book. Please check your connection or contact info@ltseliteprep.ca");
       setLoading(false);
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Step 1: Info */}
-      <div className="space-y-5">
-        <Field label="Full Name *">
-          <Input
-            name="name"
-            type="text"
-            placeholder="Your full name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            onFocus={() => onStepChange(1)}
-          />
-        </Field>
-        <Field label="Email *">
-          <Input
-            name="email"
-            type="email"
-            placeholder="your@email.com"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-        </Field>
-      </div>
-
-      {/* Step 2: Selection */}
-      <div className="space-y-5" onFocus={() => onStepChange(2)}>
-        <label className="text-sm font-semibold text-white/50 block">
-          Select Program *
-        </label>
-        <div className="grid grid-cols-1 gap-3">
-          {PROGRAMS.map(({ id, name, tagline }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setForm((prev) => ({ ...prev, program: id as any }))}
-              className={`relative text-left p-4 rounded-2xl border transition-all duration-300 ${
-                form.program === id
-                  ? "border-white bg-white/5"
-                  : "border-white/5 bg-transparent hover:border-white/20"
-              }`}
-            >
-              <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-colors
-                                   ${
-                                     form.program === id
-                                       ? "bg-white text-black"
-                                       : "bg-white/5 text-white/40"
-                                   }`}
-              >
-
-              </div>
-              <h3 className="font-bold text-lg mb-1">{name}</h3>
-              <p className="text-xs text-white/30">{tagline}</p>
-
-              {form.program === id && (
-                <div className="absolute top-4 right-4">
-                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                    <Check className="w-3 h-3 text-black" />
-                  </div>
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* メッセージ */}
-      <Field label="Message (optional)">
-        <textarea
-          name="message"
-          placeholder="Tell us about your experience level, goals, or any questions..."
-          value={form.message ?? ""}
-          onChange={handleChange}
-          rows={4}
-          className={`${INPUT_CLASS} resize-none`}
-        />
-      </Field>
-
-      {/* エラー */}
-      {error && (
-        <p
-          className="text-red-400 text-sm bg-red-500/8 border border-red-500/15
-                     rounded-xl px-4 py-3"
-        >
-          {error}
-        </p>
-      )}
-
-      {/* 送信ボタン */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2
-                   bg-white text-black font-extrabold text-base
-                   py-4 rounded-2xl transition-all hover:bg-white/90 disabled:opacity-40"
-      >
-        {loading ? (
-          <>
-            <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-            Sending...
-          </>
-        ) : (
-          <>
-            Send Booking Request
-            <ArrowRight className="w-5 h-5" />
-          </>
-        )}
-      </button>
-
-      <p className="text-center text-white/20 text-xs">
-        No payment required · We&apos;ll confirm your spot via email
-      </p>
-    </form>
-  );
-}
-
-// ── 送信完了画面 ──────────────────────────────────────────────
-
-function SuccessMessage({ onReset }: { onReset: () => void }) {
-  return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-5">
-      <div className="text-center max-w-md">
-        <div
-          className="w-20 h-20 rounded-full
-                     bg-gradient-to-br from-[#F97316]/20 to-[#F97316]/5
-                     border border-[#F97316]/20
-                     flex items-center justify-center mx-auto mb-6"
-        >
-          <CheckCircle className="w-8 h-8 text-[#F97316]" />
-        </div>
-        <h2 className="text-3xl font-extrabold mb-3">
-          {SUCCESS_MESSAGE.title}
-        </h2>
-        <p className="text-white/40 leading-relaxed mb-8">
-          {SUCCESS_MESSAGE.body}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={onReset}
-            className="inline-flex items-center justify-center gap-2
-                       border border-white/15 hover:border-[#F97316]/30
-                       text-white font-semibold px-6 py-3
-                       rounded-xl transition-all"
-          >
-            {SUCCESS_MESSAGE.btnText}
-          </button>
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center gap-2
-                       text-white/40 hover:text-white font-semibold px-6 py-3
-                       rounded-xl transition-all"
-          >
-            Back to Home
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-[#000] flex items-center justify-center px-5">
+        <div className="text-center max-w-md reveal">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+            <Check className="w-10 h-10 text-black" />
+          </div>
+          <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Request Sent</h2>
+          <p className="text-white/40 leading-relaxed mb-10">
+            We've received your booking request. Check your email for the confirmation and payment instructions.
+          </p>
+          <Link href="/" className="btn-accent inline-flex items-center gap-2 font-bold px-10 py-4 rounded-2xl">
+            BACK TO HOME
           </Link>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-// ── 共通スタイル & ヘルパー ───────────────────────────────────
-
-const INPUT_CLASS = `
-  w-full bg-[#111] border border-white/8
-  text-white placeholder-white/20
-  rounded-xl px-4 py-3.5 text-base
-  focus:outline-none focus:border-white/40
-  focus:bg-[#161616] focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)]
-  transition-all
-`;
-
-const SELECT_CLASS = `
-  w-full bg-[#111] border border-white/8
-  text-white/80
-  rounded-xl px-4 py-3.5 text-base
-  focus:outline-none focus:border-white/40
-  focus:bg-[#161616] focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)]
-  transition-all appearance-none cursor-pointer
-`;
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-semibold text-white/50">{label}</label>
-      {children}
+    <div className="min-h-screen bg-black pt-32 pb-20 px-5">
+      <div className="max-w-xl mx-auto">
+        
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <Link href="/" className="inline-flex items-center gap-2 text-white/30 hover:text-white text-xs font-bold uppercase tracking-widest mb-10 transition-all">
+            <ArrowLeft className="w-3 h-3" /> Back
+          </Link>
+          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter leading-none">
+            Book <span className="text-white/20">Session</span>
+          </h1>
+          <div className="flex items-center justify-center gap-4">
+            {[1, 2, 3].map(s => (
+              <div key={s} className={`h-1 rounded-full transition-all duration-500 ${step >= s ? 'w-12 bg-white' : 'w-4 bg-white/10'}`} />
+            ))}
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          
+          {/* STEP 1: Basic Info */}
+          {step === 1 && (
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div>
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-2 block">Full Name</label>
+                <input 
+                  required type="text" placeholder="JORDAN SMITH"
+                  value={form.name} onChange={e => setForm({...form, name: e.target.value})}
+                  className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold focus:border-white/20 outline-none transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-2 block">Email Address</label>
+                <input 
+                  required type="email" placeholder="JORDAN@EXAMPLE.COM"
+                  value={form.email} onChange={e => setForm({...form, email: e.target.value})}
+                  className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold focus:border-white/20 outline-none transition-all"
+                />
+              </div>
+              <button 
+                type="button" onClick={() => form.name && form.email && setStep(2)}
+                className="w-full bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/90 active:scale-95 transition-all mt-4"
+              >
+                NEXT STEP <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+
+          {/* STEP 2: Program selection */}
+          {step === 2 && (
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-2 block">Select Program</label>
+              <div className="grid grid-cols-1 gap-3">
+                {PROGRAMS.map(p => (
+                  <button
+                    key={p.id} type="button"
+                    onClick={() => setForm({...form, program: p.id as any})}
+                    className={`text-left p-6 rounded-2xl border transition-all ${form.program === p.id ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-black text-lg leading-none mb-1 uppercase tracking-tight">{p.name}</h4>
+                        <p className={`text-xs ${form.program === p.id ? 'text-black/60' : 'text-white/20'}`}>{p.tagline}</p>
+                      </div>
+                      {form.program === p.id && <Check className="w-5 h-5" />}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5 hover:text-white transition-all">BACK</button>
+                <button type="button" onClick={() => setStep(3)} className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all">CHOOSE DATE <ArrowRight className="w-5 h-5" /></button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: Date & Time selection */}
+          {step === 3 && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="grid grid-cols-1 gap-6">
+                <div>
+                  <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-3 block flex items-center gap-2">
+                    <CalendarIcon className="w-3 h-3" /> Select Date
+                  </label>
+                  <Calendar 
+                    selectedDate={form.preferred_date || ""} 
+                    onSelect={date => setForm({...form, preferred_date: date})} 
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-3 block flex items-center gap-2">
+                    <Clock className="w-3 h-3" /> Preferred Time
+                  </label>
+                  <div className="grid grid-cols-1 gap-2">
+                    {TIME_SLOTS.map(t => (
+                      <button
+                        key={t} type="button"
+                        onClick={() => setForm({...form, preferred_time: t})}
+                        className={`text-left px-5 py-4 rounded-xl border text-sm font-bold transition-all ${form.preferred_time === t ? 'bg-white text-black border-white' : 'bg-[#111] text-white/40 border-white/5 hover:border-white/10'}`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {error && <p className="text-red-500 text-xs font-bold text-center">{error}</p>}
+
+              <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setStep(2)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5 hover:text-white transition-all">BACK</button>
+                <button 
+                  type="submit" disabled={!form.preferred_date || !form.preferred_time || loading}
+                  className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-30 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)]"
+                >
+                  {loading ? 'SENDING...' : 'CONFIRM BOOKING'}
+                  {!loading && <ArrowRight className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+          )}
+
+        </form>
+
+        <p className="mt-12 text-center text-[10px] font-black text-white/10 uppercase tracking-[0.3em]">
+          Professional Development &copy; {new Date().getFullYear()}
+        </p>
+      </div>
     </div>
   );
-}
-
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={INPUT_CLASS} />;
 }
