@@ -210,8 +210,8 @@ function BookPageInner() {
         email: form.email,
         phone: form.phone || null,
         program: form.program,
-        preferred_date: isPass ? "PASS PURCHASE" : (form.preferred_date || null),
-        preferred_time: isPass ? "PASS PURCHASE" : (form.preferred_time || null),
+        preferred_date: isPass ? null : (form.preferred_date || null),
+        preferred_time: isPass ? null : (form.preferred_time || null),
         message: isPass ? "PASS PURCHASE" : (form.message || null),
       });
 

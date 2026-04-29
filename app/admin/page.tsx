@@ -578,12 +578,12 @@ function BookingCard({
             <DetailRow
               icon={Calendar}
               label="Date / Session"
-              value={booking.preferred_date === "PASS PURCHASE" ? "🎫 PASS PURCHASE" : (booking.preferred_date || "—")}
+              value={(booking.program === "pass-5" || booking.program === "pass-10") ? "🎫 PASS PURCHASE" : (booking.preferred_date || "—")}
             />
             <DetailRow
               icon={Clock}
               label="Time / Slot"
-              value={booking.preferred_time === "PASS PURCHASE" ? "N/A (Bulk Pass)" : (booking.preferred_time || "—")}
+              value={(booking.program === "pass-5" || booking.program === "pass-10") ? "N/A (Bulk Pass)" : (booking.preferred_time || "—")}
             />
           </div>
 
