@@ -292,15 +292,7 @@ function BookPageInner() {
                 <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
                 <button 
                   type="button" 
-                  onClick={() => {
-                    if (form.program === 'pass-5' || form.program === 'pass-10') {
-                      // Skip step 3 (calendar) and proceed to confirm
-                      // We'll handle the submission differently in step 3 or by adding a final confirmation here
-                      setStep(3); 
-                    } else {
-                      setStep(3);
-                    }
-                  }} 
+                  onClick={() => setStep(3)} 
                   className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2"
                 >
                   {form.program === 'pass-5' || form.program === 'pass-10' ? 'PROCEED' : 'CHOOSE DATE'} 
