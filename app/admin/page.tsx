@@ -576,13 +576,13 @@ function BookingCard({
             />
             <DetailRow
               icon={Calendar}
-              label="Preferred Date"
-              value={booking.preferred_date || "No preference"}
+              label="Date / Session"
+              value={booking.preferred_date === "PASS PURCHASE" ? "🎫 PASS PURCHASE" : (booking.preferred_date || "—")}
             />
             <DetailRow
               icon={Clock}
-              label="Preferred Time"
-              value={booking.preferred_time || "No preference"}
+              label="Time / Slot"
+              value={booking.preferred_time === "PASS PURCHASE" ? "N/A (Bulk Pass)" : (booking.preferred_time || "—")}
             />
           </div>
 

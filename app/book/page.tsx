@@ -202,15 +202,17 @@ function BookPageInner() {
     }
 
     setLoading(true);
+    const isPass = form.program === 'pass-5' || form.program === 'pass-10';
+
     try {
       await supabase.from("bookings").insert({
         name: form.name,
         email: form.email,
         phone: form.phone || null,
         program: form.program,
-        preferred_date: form.preferred_date || null,
-        preferred_time: form.preferred_time || null,
-        message: form.message || null,
+        preferred_date: isPass ? "PASS PURCHASE" : (form.preferred_date || null),
+        preferred_time: isPass ? "PASS PURCHASE" : (form.preferred_time || null),
+        message: isPass ? "PASS PURCHASE" : (form.message || null),
       });
 
       const gasUrl = process.env.NEXT_PUBLIC_GOOGLE_WEBHOOK_URL; 
