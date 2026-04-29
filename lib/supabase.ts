@@ -43,7 +43,7 @@ export interface Booking {
   name:           string;            // お客さんの名前
   email:          string;            // メールアドレス
   phone:          string | null;     // 電話番号（任意）
-  program:        "futures" | "high" | "college" | "private" | "trial"; // プログラム
+  program:        "futures" | "high" | "college" | "private" | "trial" | "pass-5" | "pass-10"; // プログラム
   preferred_date: string | null;     // 希望日（例: "2026-05-10"）
   preferred_time: string | null;     // 希望時間帯（例: "Morning (9am–12pm)"）
   message:        string | null;     // 自由記述メッセージ（任意）
