@@ -105,7 +105,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
 // ── ダッシュボード ────────────────────────────────────────────
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"bookings" | "schedule">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "passes" | "schedule">("bookings");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
@@ -118,7 +118,7 @@ function Dashboard() {
               Admin Dashboard
             </h1>
             <p className="text-white/40 text-sm">
-              Manage your bookings and schedule
+              Manage your bookings, passes and schedule
             </p>
           </div>
 
@@ -131,6 +131,13 @@ function Dashboard() {
               Bookings
             </button>
             <button
+              onClick={() => setActiveTab("passes")}
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "passes" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+                }`}
+            >
+              Passes
+            </button>
+            <button
               onClick={() => setActiveTab("schedule")}
               className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "schedule" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
                 }`}
@@ -140,7 +147,9 @@ function Dashboard() {
           </div>
         </div>
 
-        {activeTab === "bookings" ? <BookingsTab /> : <ScheduleTab />}
+        {activeTab === "bookings" && <BookingsTab type="sessions" />}
+        {activeTab === "passes" && <BookingsTab type="passes" />}
+        {activeTab === "schedule" && <ScheduleTab />}
       </div>
     </div>
   );
@@ -148,7 +157,7 @@ function Dashboard() {
 
 // ── Bookings Tab ──────────────────────────────────────────────
 
-function BookingsTab() {
+function BookingsTab({ type }: { type: "sessions" | "passes" }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
@@ -163,7 +172,14 @@ function BookingsTab() {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (data) setBookings(data as Booking[]);
+    if (data) {
+      // タブの種類に応じてフィルタリング
+      const filteredData = data.filter(b => {
+        const isPass = b.program === "pass-5" || b.program === "pass-10";
+        return type === "passes" ? isPass : !isPass;
+      });
+      setBookings(filteredData as Booking[]);
+    }
     if (error) console.error("Fetch error:", error);
     setLoading(false);
     setRefreshing(false);
