@@ -545,9 +545,10 @@ function BookingCard({
         <div className="flex-1 min-w-0">
           <p className="font-bold text-base truncate">{booking.name}</p>
           <p className="text-xs text-white/30 capitalize mt-0.5">
-            {booking.program === "trial"
-              ? "Free Trial"
-              : `LTS ${booking.program}`}
+            {booking.program === "trial" ? "Free Trial" : 
+             booking.program === "pass-5" ? "5-Session Pass" :
+             booking.program === "pass-10" ? "10-Session Pass" :
+             `LTS ${booking.program}`}
           </p>
         </div>
 
