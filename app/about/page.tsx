@@ -367,7 +367,7 @@ export default function AboutPage() {
                          font-bold text-lg px-10 py-4 rounded-2xl
                          active:scale-95 group"
             >
-              Book a Free Trial
+              JOIN A SESSION
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
