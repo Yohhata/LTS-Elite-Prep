@@ -17,7 +17,8 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Calendar as CalendarIcon,
-  Clock
+  Clock,
+  CheckCircle2
 } from "lucide-react";
 
 // ── 設定データ ────────────────────────────────────────────────
