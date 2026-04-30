@@ -56,17 +56,17 @@ export default function CollegeContactPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-[100svh] bg-[#0a0a0a] flex items-center justify-center px-5">
-        <div className="text-center reveal">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8">
-            <CheckCircle2 className="w-10 h-10 text-black" />
+      <div className="min-h-screen bg-black flex items-center justify-center px-5">
+        <div className="text-center animate-in fade-in zoom-in duration-500">
+          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+            <CheckCircle2 className="w-12 h-12 text-black" />
           </div>
-          <h2 className="text-4xl font-black mb-4 uppercase">Application Sent</h2>
-          <p className="text-white/50 max-w-md mx-auto mb-10 leading-relaxed">
-            Thank you for your interest in LTS College. Coach Paolo will review your application and reach out within 24-48 hours.
+          <h2 className="text-5xl font-black mb-6 uppercase tracking-tighter italic">Application <span className="text-white/20">Sent</span></h2>
+          <p className="text-white/40 max-w-sm mx-auto mb-12 text-sm font-bold uppercase tracking-widest leading-relaxed">
+            Coach Paolo will review your application and reach out within 24-48 hours.
           </p>
-          <Link href="/" className="text-white font-bold border-b border-white/20 pb-1 hover:border-white transition-all">
-            Back to Home
+          <Link href="/" className="inline-block bg-white text-black font-black px-10 py-5 rounded-2xl hover:scale-105 transition-all active:scale-95">
+            BACK TO HOME
           </Link>
         </div>
       </div>
