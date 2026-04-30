@@ -17,12 +17,17 @@ export async function POST(request: Request) {
         process.env.SUPABASE_SERVICE_ROLE_KEY
       );
       
-      await supabaseServer.from("bookings").insert({
+      const { error: sbError } = await supabaseServer.from("bookings").insert({
         name,
         email,
         program: "college",
         message: `Current Level: ${level || "—"}\n\nMessage: ${message || ""}`
       });
+
+      if (sbError) {
+        console.error("Supabase Insert Error (College):", sbError);
+        throw sbError;
+      }
     }
 
     // 2. Resend で自動返信
