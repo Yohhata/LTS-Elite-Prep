@@ -17,11 +17,11 @@ export async function POST(request: Request) {
         process.env.SUPABASE_SERVICE_ROLE_KEY
       );
       
-      await supabaseServer.from("college_inquiries").insert({
+      await supabaseServer.from("bookings").insert({
         name,
         email,
-        level: level || "",
-        message: message || ""
+        program: "college",
+        message: `Current Level: ${level || "—"}\n\nMessage: ${message || ""}`
       });
     }
 
