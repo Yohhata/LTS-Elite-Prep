@@ -323,25 +323,47 @@ function BookPageInner() {
                 <>
                   <div>
                     <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><CalendarIcon className="w-3 h-3" /> Available Classes</label>
-                    <Calendar selectedDate={form.preferred_date || ""} onSelect={date => setForm({...form, preferred_date: date})} availableDates={availableDates} />
+                    <Calendar selectedDate={form.preferred_date || ""} onSelect={date => setForm({...form, preferred_date: date, preferred_time: ""})} availableDates={availableDates} />
                   </div>
                   
-                  {form.preferred_date && (
-                    <div className="animate-in fade-in slide-in-from-top-2">
-                      <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3 block flex items-center gap-2"><Clock className="w-3 h-3" /> Available Time</label>
-                      <div className="grid grid-cols-1 gap-2">
-                        {selectedDayClasses.length > 0 ? (
-                          selectedDayClasses.map(c => (
-                            <button key={c.id} type="button" onClick={() => setForm({...form, preferred_time: `${c.start_time} - ${c.end_time}`})} className={`text-left px-5 py-4 rounded-xl border text-sm font-bold transition-all ${form.preferred_time === `${c.start_time} - ${c.end_time}` ? 'bg-white text-black border-white' : 'bg-[#111] text-white/40 border-white/5 hover:border-white/10'}`}>
-                              {c.start_time.slice(0,5)} - {c.end_time.slice(0,5)} ({c.title})
-                            </button>
-                          ))
-                        ) : (
-                          <p className="text-white/20 text-xs font-bold uppercase tracking-widest text-center py-4 border border-dashed border-white/10 rounded-xl">No classes scheduled for this date</p>
-                        )}
-                      </div>
+                  {/* Quick Select List */}
+                  <div className="pt-4">
+                    <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-4 block">Select a Session From List</label>
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                      {classes.filter(c => c.program === form.program).length > 0 ? (
+                        classes
+                          .filter(c => c.program === form.program)
+                          .sort((a, b) => new Date(a.class_date).getTime() - new Date(b.class_date).getTime())
+                          .map(c => {
+                            const isSelected = form.preferred_date === c.class_date && form.preferred_time === `${c.start_time} - ${c.end_time}`;
+                            const d = new Date(c.class_date);
+                            const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
+                            
+                            return (
+                              <button 
+                                key={c.id} 
+                                type="button" 
+                                onClick={() => setForm({...form, preferred_date: c.class_date, preferred_time: `${c.start_time} - ${c.end_time}`})}
+                                className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all
+                                  ${isSelected ? 'bg-white text-black border-white' : 'bg-[#111] text-white/60 border-white/5 hover:border-white/10'}`}
+                              >
+                                <div className="flex flex-col text-left">
+                                  <span className="text-[10px] font-black uppercase opacity-50 mb-1">{dateLabel}</span>
+                                  <span className="font-bold text-sm uppercase">{c.title}</span>
+                                </div>
+                                <div className="text-right">
+                                  <span className="text-xs font-black opacity-50 block">{c.start_time.slice(0,5)} - {c.end_time.slice(0,5)}</span>
+                                </div>
+                              </button>
+                            );
+                          })
+                      ) : (
+                        <div className="text-center py-10 border border-dashed border-white/10 rounded-2xl">
+                          <p className="text-white/20 text-xs font-bold uppercase tracking-widest">No upcoming classes found</p>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </>
               )}
 
