@@ -105,7 +105,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
 // ── ダッシュボード ────────────────────────────────────────────
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"bookings" | "passes" | "schedule">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "passes" | "college" | "schedule">("bookings");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
@@ -118,28 +118,35 @@ function Dashboard() {
               Admin Dashboard
             </h1>
             <p className="text-white/40 text-sm">
-              Manage your bookings, passes and schedule
+              Manage your bookings, passes, college inquiries and schedule
             </p>
           </div>
 
-          <div className="flex bg-[#111] p-1 rounded-xl border border-white/10">
+          <div className="flex bg-[#111] p-1 rounded-xl border border-white/10 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab("bookings")}
-              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "bookings" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "bookings" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
                 }`}
             >
               Bookings
             </button>
             <button
               onClick={() => setActiveTab("passes")}
-              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "passes" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "passes" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
                 }`}
             >
               Passes
             </button>
             <button
+              onClick={() => setActiveTab("college")}
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "college" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+                }`}
+            >
+              College
+            </button>
+            <button
               onClick={() => setActiveTab("schedule")}
-              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === "schedule" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "schedule" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
                 }`}
             >
               Schedule
@@ -149,6 +156,7 @@ function Dashboard() {
 
         {activeTab === "bookings" && <BookingsTab type="sessions" />}
         {activeTab === "passes" && <BookingsTab type="passes" />}
+        {activeTab === "college" && <BookingsTab type="college" />}
         {activeTab === "schedule" && <ScheduleTab />}
       </div>
     </div>
@@ -157,7 +165,7 @@ function Dashboard() {
 
 // ── Bookings Tab ──────────────────────────────────────────────
 
-function BookingsTab({ type }: { type: "sessions" | "passes" }) {
+function BookingsTab({ type }: { type: "sessions" | "passes" | "college" }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
@@ -176,7 +184,10 @@ function BookingsTab({ type }: { type: "sessions" | "passes" }) {
       // タブの種類に応じてフィルタリング
       const filteredData = data.filter(b => {
         const isPass = b.program === "pass-5" || b.program === "pass-10";
-        return type === "passes" ? isPass : !isPass;
+        if (type === "passes") return isPass;
+        if (type === "college") return b.program === "college";
+        // sessions タブの場合は、パスでもカレッジでもないものを表示
+        return !isPass && b.program !== "college";
       });
       setBookings(filteredData as Booking[]);
     }
@@ -187,7 +198,20 @@ function BookingsTab({ type }: { type: "sessions" | "passes" }) {
 
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [type]); // タブ切り替え時に再取得
+
+  // プログラム更新（移動）
+  async function updateProgram(id: string, newProgram: any) {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ program: newProgram })
+      .eq("id", id);
+    
+    if (!error) {
+      // 別のプログラムに移動したため、現在のリストからは消す（または再取得）
+      fetchBookings();
+    }
+  }
 
   // フィルター
   const filtered = useMemo(() => {
@@ -322,6 +346,7 @@ function BookingsTab({ type }: { type: "sessions" | "passes" }) {
               key={booking.id}
               booking={booking}
               onUpdateStatus={updateStatus}
+              onUpdateProgram={updateProgram}
             />
           ))}
         </div>
@@ -526,9 +551,11 @@ function StatCard({
 function BookingCard({
   booking,
   onUpdateStatus,
+  onUpdateProgram,
 }: {
   booking: Booking;
   onUpdateStatus: (id: string, status: BookingStatus) => void;
+  onUpdateProgram: (id: string, program: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -653,6 +680,23 @@ function BookingCard({
             >
               ✉ Email
             </a>
+            <div className="flex-1" />
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest mr-2">Move to:</span>
+              {(["futures", "high", "college"] as const).map(prog => (
+                booking.program !== prog && (
+                  <button
+                    key={prog}
+                    onClick={() => onUpdateProgram(booking.id, prog)}
+                    className="text-[10px] font-bold px-3 py-1.5 rounded-lg
+                               bg-white/5 text-white/40 border border-white/5
+                               hover:bg-white/10 hover:text-white transition-all capitalize"
+                  >
+                    {prog}
+                  </button>
+                )
+              ))}
+            </div>
           </div>
         </div>
       )}
