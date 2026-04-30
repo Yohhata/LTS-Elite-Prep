@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { password, title, class_date, start_time, end_time, coach, capacity } = body;
+  const { password, title, program, class_date, start_time, end_time, coach, capacity } = body;
 
   if (password !== ADMIN_PASSWORD) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -40,6 +40,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase.from("classes").insert({
     title,
+    program: program || "futures", // デフォルトはfutures
     class_date,
     start_time,
     end_time,
