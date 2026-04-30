@@ -364,6 +364,7 @@ function ScheduleTab() {
 
   // Form states
   const [title, setTitle] = useState("LTS Futures (Youth)");
+  const [program, setProgram] = useState("futures");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("18:00");
   const [endTime, setEndTime] = useState("19:30");
@@ -395,6 +396,7 @@ function ScheduleTab() {
       body: JSON.stringify({
         password: ADMIN_PASSWORD,
         title,
+        program,
         class_date: date,
         start_time: startTime,
         end_time: endTime,
@@ -449,8 +451,15 @@ function ScheduleTab() {
       {showForm && (
         <form onSubmit={handleAddClass} className="bg-[#111] border border-white/10 rounded-2xl p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-white/50 uppercase tracking-widest mb-2">Class Title</label>
-            <input required type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white focus:border-[#F97316]/50 focus:outline-none" />
+            <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">Class Title</label>
+            <input required value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-black border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:border-[#F97316]/50 transition-all" />
+          </div>
+          <div>
+            <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">Program</label>
+            <select value={program} onChange={e => setProgram(e.target.value)} className="w-full bg-black border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:border-[#F97316]/50 transition-all">
+              <option value="futures">LTS Futures (Youth)</option>
+              <option value="high">LTS High (High School)</option>
+            </select>
           </div>
           <div>
             <label className="block text-xs font-bold text-white/50 uppercase tracking-widest mb-2">Date (YYYY-MM-DD)</label>

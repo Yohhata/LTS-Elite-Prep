@@ -185,12 +185,16 @@ function BookPageInner() {
     getClasses();
   }, []);
 
-  const availableDates = useMemo(() => classes.map(c => c.class_date), [classes]);
+  const availableDates = useMemo(() => {
+    return classes
+      .filter(c => c.program === form.program)
+      .map(c => c.class_date);
+  }, [classes, form.program]);
   
   const selectedDayClasses = useMemo(() => {
     if (!form.preferred_date) return [];
-    return classes.filter(c => c.class_date === form.preferred_date);
-  }, [form.preferred_date, classes]);
+    return classes.filter(c => c.class_date === form.preferred_date && c.program === form.program);
+  }, [form.preferred_date, classes, form.program]);
 
   const TOTAL_STEPS = 3;
 
