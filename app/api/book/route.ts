@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     }
 
     // Resend でメール通知（設定されている場合のみ）
-    if (process.env.RESEND_API_KEY && process.env.NOTIFICATION_EMAIL) {
+    if (process.env.RESEND_API_KEY) {
       try {
         const { Resend } = await import("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
