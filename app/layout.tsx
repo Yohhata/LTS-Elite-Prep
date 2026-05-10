@@ -36,6 +36,8 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+import { Analytics } from "@vercel/analytics/react";
+
 // ── レイアウト ────────────────────────────────────────────────
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -44,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
