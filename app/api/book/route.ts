@@ -41,30 +41,6 @@ export async function POST(request: Request) {
     };
     const amount = priceMap[program] || "TBD";
 
-    // Googleスプレッドシート（GAS）への連携
-    if (process.env.GOOGLE_WEBHOOK_URL) {
-      try {
-        await fetch(process.env.GOOGLE_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            phone: phone || "",
-            program,
-            amount, // GAS側でインボイスに使用
-            preferred_date: preferred_date || "",
-            preferred_time: preferred_time || "",
-            message: message || "",
-            created_at: new Date().toISOString()
-          }),
-          redirect: "follow"
-        });
-      } catch (gasError) {
-        console.error("GAS Webhook Error:", gasError);
-      }
-    }
-
     // Supabase に保存
     let dbData = null;
     try {
@@ -137,7 +113,7 @@ export async function POST(request: Request) {
               <div style="margin:30px 0;padding:25px;background:#f9f9f9;border-radius:16px;border:1px solid #eee;">
                 <h3 style="margin-top:0;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</h3>
                 <p style="margin:10px 0;"><strong>E-transfer to:</strong> info@ltseliteprep.ca</p>
-                <p style="margin:10px 0;"><strong>Amount:</strong> $75</p>
+                <p style="margin:10px 0;"><strong>Amount:</strong> ${amount}</p>
                 <p style="margin:10px 0;font-size:13px;color:#666;"><em>Note: Please include the athlete's name in the transfer notes.</em></p>
               </div>
 

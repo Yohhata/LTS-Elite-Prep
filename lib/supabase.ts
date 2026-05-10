@@ -61,6 +61,7 @@ export interface ClassSchedule {
   start_time: string;
   end_time: string;
   coach: string | null;
+  program: string;
   capacity: number;
   booked_count: number;
   created_at: string;
