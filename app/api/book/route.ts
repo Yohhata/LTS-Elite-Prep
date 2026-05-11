@@ -67,10 +67,17 @@ export async function POST(request: Request) {
       console.error("Supabase Error:", e);
     }
 
-    // Resend でメール通知（設定されている場合のみ）
-    if (process.env.RESEND_API_KEY) {
-      try {
-        const { Resend } = require("resend");
+    // Resend のキーがない場合はエラーとして処理する（ローカルでのテスト対策）
+    if (!process.env.RESEND_API_KEY) {
+      console.error("CRITICAL: RESEND_API_KEY is completely missing in this environment!");
+      return NextResponse.json(
+        { error: "Email configuration missing (RESEND_API_KEY not found)" },
+        { status: 500 }
+      );
+    }
+
+    try {
+      const { Resend } = require("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
 
         const programLabels: Record<string, string> = {
