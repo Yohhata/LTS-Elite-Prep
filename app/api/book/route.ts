@@ -98,7 +98,7 @@ export async function POST(request: Request) {
             </table>
           `,
         });
-        if (adminError) console.error("Resend Admin Error:", adminError);
+        if (adminError) return NextResponse.json({ error: "Admin email failed", details: adminError }, { status: 500 });
 
         // 2. ユーザー（お客さん）への確認メール (Invoice)
         const { error: userError } = await resend.emails.send({
@@ -126,10 +126,10 @@ export async function POST(request: Request) {
             </div>
           `,
         });
-        if (userError) console.error("Resend User Error:", userError);
+        if (userError) return NextResponse.json({ error: "User email failed", details: userError }, { status: 500 });
 
-      } catch (emailErr) {
-        console.error("Email notification error:", emailErr);
+      } catch (emailErr: any) {
+        return NextResponse.json({ error: "Email exception", message: emailErr.message || String(emailErr) }, { status: 500 });
       }
     }
 
