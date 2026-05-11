@@ -209,29 +209,28 @@ function BookPageInner() {
     const isPass = form.program === 'pass-5' || form.program === 'pass-10';
 
     try {
-      await supabase.from("bookings").insert({
-        name: form.name,
-        email: form.email,
-        phone: form.phone || null,
-        program: form.program,
-        preferred_date: isPass ? null : (form.preferred_date || null),
-        preferred_time: isPass ? null : (form.preferred_time || null),
-        message: isPass ? "PASS PURCHASE" : (form.message || null),
+      const res = await fetch("/api/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone || null,
+          program: form.program,
+          preferred_date: isPass ? null : (form.preferred_date || null),
+          preferred_time: isPass ? null : (form.preferred_time || null),
+          message: isPass ? "PASS PURCHASE" : (form.message || null),
+        }),
       });
 
-      const gasUrl = process.env.NEXT_PUBLIC_GOOGLE_WEBHOOK_URL; 
-      if (gasUrl) {
-        const priceMap: any = { futures: "$75", high: "$75", "pass-5": "$299", "pass-10": "$449", private: "TBD" };
-        fetch(gasUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, amount: priceMap[form.program] || "TBD" }),
-          mode: 'no-cors'
-        });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Booking failed");
       }
+
       setSubmitted(true);
-    } catch (err) {
-      setError("Failed to book. Please contact info@ltseliteprep.ca");
+    } catch (err: any) {
+      setError(err.message || "Failed to book. Please contact info@ltseliteprep.ca");
       setLoading(false);
     }
   }
