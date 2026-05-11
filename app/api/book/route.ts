@@ -138,7 +138,6 @@ export async function POST(request: Request) {
       } catch (emailErr: any) {
         return NextResponse.json({ error: "Email exception", message: emailErr.message || String(emailErr) }, { status: 500 });
       }
-    }
 
     return NextResponse.json({ success: true, booking: dbData });
   } catch (err) {
