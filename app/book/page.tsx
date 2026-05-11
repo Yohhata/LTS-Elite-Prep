@@ -181,16 +181,25 @@ function BookPageInner() {
     async function getClasses() {
       const { data } = await supabase.from("classes").select("*");
       if (data) {
-        // 今日より前の日付のクラスを除外する
+        // 1. 今日より前の日付のクラスを除外する
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
         const futureClasses = data.filter(c => {
-          const classDate = new Date(c.class_date + 'T00:00:00'); // 文字列から日付オブジェクトへ
+          const classDate = new Date(c.class_date + 'T00:00:00');
           return classDate >= today;
         });
         
-        setClasses(futureClasses);
+        // 2. 同じ名前・日付・時間の重複を除外する
+        const seen = new Set<string>();
+        const uniqueClasses = futureClasses.filter(c => {
+          const key = `${c.title}|${c.class_date}|${c.start_time}|${c.end_time}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        
+        setClasses(uniqueClasses);
       }
     }
     getClasses();
