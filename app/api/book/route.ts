@@ -138,11 +138,19 @@ export async function POST(request: Request) {
         return NextResponse.json({ 
           success: true, 
           booking: dbData,
-          emailIds: { admin: adminData?.id, user: userData?.id }
+          debug: {
+            admin: { data: adminData, error: adminError },
+            user: { data: userData, error: userError }
+          }
         });
 
       } catch (emailErr: any) {
-        return NextResponse.json({ error: "Email exception", message: emailErr.message || String(emailErr) }, { status: 500 });
+        console.error("Resend Exception:", emailErr);
+        return NextResponse.json({ 
+          error: "Email exception", 
+          message: emailErr.message || String(emailErr),
+          stack: emailErr.stack
+        }, { status: 500 });
       }
 
     return NextResponse.json({ success: true, booking: dbData });
