@@ -180,7 +180,18 @@ function BookPageInner() {
   useEffect(() => {
     async function getClasses() {
       const { data } = await supabase.from("classes").select("*");
-      if (data) setClasses(data);
+      if (data) {
+        // 今日より前の日付のクラスを除外する
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const futureClasses = data.filter(c => {
+          const classDate = new Date(c.class_date + 'T00:00:00'); // 文字列から日付オブジェクトへ
+          return classDate >= today;
+        });
+        
+        setClasses(futureClasses);
+      }
     }
     getClasses();
   }, []);
