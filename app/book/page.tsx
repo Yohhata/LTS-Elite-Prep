@@ -194,9 +194,9 @@ function BookPageInner() {
     async function getClasses() {
       const { data } = await supabase.from("classes").select("*");
       if (data) {
-        // 1. 今日より前の日付のクラスを除外する
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // 1. 今日（ローカル）の 00:00:00 を取得
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
         const futureClasses = data.filter(c => {
           const classDate = new Date(c.class_date + 'T00:00:00');
@@ -338,6 +338,10 @@ function BookPageInner() {
 
           {step === 3 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+              <button type="button" onClick={() => setStep(2)} className="flex items-center gap-2 text-white/40 hover:text-white text-[10px] font-black uppercase transition-all mb-2">
+                <ChevronLeft className="w-3 h-3" /> Previous: Select Level
+              </button>
+
               {(form.program === 'pass-5' || form.program === 'pass-10') ? (
                 <div className="text-center py-10 bg-[#111] border border-white/5 rounded-3xl">
                   <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
