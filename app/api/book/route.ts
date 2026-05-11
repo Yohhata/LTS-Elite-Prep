@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     // Resend でメール通知（設定されている場合のみ）
     if (process.env.RESEND_API_KEY) {
       try {
-        const { Resend } = await import("resend");
+        const { Resend } = require("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
 
         const programLabels: Record<string, string> = {
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
         };
 
         // 1. 管理者（あなた）への通知
-        await resend.emails.send({
+        const { error: adminError } = await resend.emails.send({
           from: "LTS System <info@ltseliteprep.ca>",
           to: "yoshimasa@w-japan.net",
           subject: `New Session Booking: ${name} — ${programLabels[program] || program}`,
@@ -98,9 +98,10 @@ export async function POST(request: Request) {
             </table>
           `,
         });
+        if (adminError) console.error("Resend Admin Error:", adminError);
 
         // 2. ユーザー（お客さん）への確認メール (Invoice)
-        await resend.emails.send({
+        const { error: userError } = await resend.emails.send({
           from: "LTS Elite Prep <info@ltseliteprep.ca>",
           to: email,
           subject: "Action Required: Complete your registration for LTS Elite Prep",
@@ -125,8 +126,9 @@ export async function POST(request: Request) {
             </div>
           `,
         });
+        if (userError) console.error("Resend User Error:", userError);
+
       } catch (emailErr) {
-        // メール送信失敗は予約自体の失敗にはしない
         console.error("Email notification error:", emailErr);
       }
     }
