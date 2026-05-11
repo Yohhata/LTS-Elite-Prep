@@ -109,13 +109,18 @@ function Calendar({
   const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
 
+  // ローカルタイムゾーンで日付文字列を取得（UTCズレ防止）
+  const toDateStr = (date: Date) => {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  };
+
   const isSelected = (date: Date) => {
     if (!selectedDate) return false;
-    return date.toISOString().split('T')[0] === selectedDate;
+    return toDateStr(date) === selectedDate;
   };
 
   const hasClass = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toDateStr(date);
     return availableDates.includes(dateStr);
   };
 
@@ -138,7 +143,7 @@ function Calendar({
       <div className="grid grid-cols-7 gap-1">
         {daysInMonth.map((date, i) => {
           if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
-          const dateStr = date.toISOString().split('T')[0];
+          const dateStr = toDateStr(date);
           const active = hasClass(date);
           const selected = isSelected(date);
 
@@ -363,7 +368,7 @@ function BookPageInner() {
                           .sort((a, b) => new Date(a.class_date).getTime() - new Date(b.class_date).getTime())
                           .map(c => {
                             const isSelected = form.preferred_date === c.class_date && form.preferred_time === `${c.start_time} - ${c.end_time}`;
-                            const d = new Date(c.class_date);
+                            const d = new Date(c.class_date + 'T00:00:00');
                             const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
                             
                             return (
