@@ -88,7 +88,7 @@ export async function POST(request: Request) {
         };
 
         // 1. 管理者（あなた）への通知
-        const { error: adminError } = await resend.emails.send({
+        const { data: adminData, error: adminError } = await resend.emails.send({
           from: "LTS System <info@ltseliteprep.ca>",
           to: "yoshimasa@w-japan.net",
           subject: `New Session Booking: ${name} — ${programLabels[program] || program}`,
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         if (adminError) return NextResponse.json({ error: "Admin email failed", details: adminError }, { status: 500 });
 
         // 2. ユーザー（お客さん）への確認メール (Invoice)
-        const { error: userError } = await resend.emails.send({
+        const { data: userData, error: userError } = await resend.emails.send({
           from: "LTS Elite Prep <info@ltseliteprep.ca>",
           to: email,
           subject: "Action Required: Complete your registration for LTS Elite Prep",
@@ -134,6 +134,12 @@ export async function POST(request: Request) {
           `,
         });
         if (userError) return NextResponse.json({ error: "User email failed", details: userError }, { status: 500 });
+
+        return NextResponse.json({ 
+          success: true, 
+          booking: dbData,
+          emailIds: { admin: adminData?.id, user: userData?.id }
+        });
 
       } catch (emailErr: any) {
         return NextResponse.json({ error: "Email exception", message: emailErr.message || String(emailErr) }, { status: 500 });
