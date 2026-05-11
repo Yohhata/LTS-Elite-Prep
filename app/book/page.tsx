@@ -219,15 +219,13 @@ function BookPageInner() {
   }, []);
 
   const availableDates = useMemo(() => {
-    return classes
-      .filter(c => c.program === form.program)
-      .map(c => c.class_date);
-  }, [classes, form.program]);
+    return classes.map(c => c.class_date);
+  }, [classes]);
   
   const selectedDayClasses = useMemo(() => {
     if (!form.preferred_date) return [];
-    return classes.filter(c => c.class_date === form.preferred_date && c.program === form.program);
-  }, [form.preferred_date, classes, form.program]);
+    return classes.filter(c => c.class_date === form.preferred_date);
+  }, [form.preferred_date, classes]);
 
   const TOTAL_STEPS = 3;
 
@@ -362,10 +360,9 @@ function BookPageInner() {
                   <div className="pt-4">
                     <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-4 block">Select a Session From List</label>
                     <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                      {classes.filter(c => c.program === form.program).length > 0 ? (
+                      {classes.length > 0 ? (
                         classes
-                          .filter(c => c.program === form.program)
-                          .sort((a, b) => new Date(a.class_date).getTime() - new Date(b.class_date).getTime())
+                          .sort((a, b) => new Date(a.class_date + 'T00:00:00').getTime() - new Date(b.class_date + 'T00:00:00').getTime())
                           .map(c => {
                             const isSelected = form.preferred_date === c.class_date && form.preferred_time === `${c.start_time} - ${c.end_time}`;
                             const d = new Date(c.class_date + 'T00:00:00');
