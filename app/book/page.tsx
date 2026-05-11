@@ -81,6 +81,14 @@ function Calendar({
 }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  // 選択された日付の月にカレンダーを自動移動
+  useEffect(() => {
+    if (selectedDate) {
+      const selected = new Date(selectedDate + 'T00:00:00');
+      setCurrentMonth(new Date(selected.getFullYear(), selected.getMonth(), 1));
+    }
+  }, [selectedDate]);
+
   const daysInMonth = useMemo(() => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
@@ -193,7 +201,7 @@ function BookPageInner() {
         // 2. 同じ名前・日付・時間の重複を除外する
         const seen = new Set<string>();
         const uniqueClasses = futureClasses.filter(c => {
-          const key = `${c.title}|${c.class_date}|${c.start_time}|${c.end_time}`;
+          const key = `${c.title}|${c.class_date}|${c.start_time}|${c.end_time}|${c.program}`;
           if (seen.has(key)) return false;
           seen.add(key);
           return true;
