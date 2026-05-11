@@ -33,11 +33,11 @@ export async function POST(request: Request) {
 
     // 金額マッピング
     const priceMap: Record<string, string> = {
-      futures: "$75",
-      high: "$75",
+      futures: "$70",
+      high: "$70",
       "pass-5": "$299",
       "pass-10": "$449",
-      private: "TBD",
+      private: "$125",
     };
     const amount = priceMap[program] || "TBD";
 

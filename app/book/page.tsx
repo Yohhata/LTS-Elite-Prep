@@ -27,12 +27,12 @@ const PROGRAMS = [
   {
     id: "futures",
     name: "LTS Futures (Drop-in)",
-    tagline: "Elementary & Middle School ($75)",
+    tagline: "Elementary & Middle School ($70)",
   },
   {
     id: "high",
     name: "LTS High (Drop-in)",
-    tagline: "High School Elite ($75)",
+    tagline: "High School Elite ($70)",
   },
   {
     id: "pass-5",
@@ -47,7 +47,7 @@ const PROGRAMS = [
   {
     id: "private",
     name: "1-on-1 Private Training",
-    tagline: "Personalized Development",
+    tagline: "Personalized Development ($125)",
   },
 ];
 

@@ -28,7 +28,7 @@ export default function RegisterPage() {
     {
       id: "drop-in",
       name: "Single Drop-in",
-      price: "$75",
+      price: "$70",
       desc: "Perfect for a single high-intensity trial session.",
       features: ["2-Hour Session", "Pro Coaching", "Full Facility Access"],
       cta: "GET DROP-IN",
