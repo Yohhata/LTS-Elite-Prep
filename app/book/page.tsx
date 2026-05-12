@@ -25,14 +25,9 @@ import {
 
 const PROGRAMS = [
   {
-    id: "futures",
-    name: "LTS Futures (Drop-in)",
-    tagline: "Elementary & Middle School ($70)",
-  },
-  {
-    id: "high",
-    name: "LTS High (Drop-in)",
-    tagline: "High School Elite ($70)",
+    id: "micro-academy",
+    name: "Micro Academy (Drop-in)",
+    tagline: "Ages 8-18 ($70)",
   },
   {
     id: "pass-5",
@@ -61,7 +56,7 @@ const EMPTY_FORM: BookingInsert = {
   name: "",
   email: "",
   phone: "",
-  program: "futures",
+  program: "micro-academy",
   preferred_date: "",
   preferred_time: "",
   message: "",
@@ -184,7 +179,7 @@ function BookPageInner() {
   const [classes, setClasses] = useState<any[]>([]);
   const [form, setForm] = useState<BookingInsert>({
     ...EMPTY_FORM,
-    program: (searchParams.get("program") as any) || "futures",
+    program: (searchParams.get("program") as any) || "micro-academy",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

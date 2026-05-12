@@ -457,8 +457,9 @@ function ScheduleTab() {
           <div>
             <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">Program</label>
             <select value={program} onChange={e => setProgram(e.target.value)} className="w-full bg-black border border-white/5 rounded-xl px-4 py-3 text-white outline-none focus:border-[#F97316]/50 transition-all">
-              <option value="futures">LTS Futures (Youth)</option>
-              <option value="high">LTS High (High School)</option>
+              <option value="micro-academy">Micro Academy</option>
+              <option value="college">LTS College</option>
+              <option value="private">Private Training</option>
             </select>
           </div>
           <div>

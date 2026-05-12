@@ -33,8 +33,7 @@ export async function POST(request: Request) {
 
     // 金額マッピング
     const priceMap: Record<string, string> = {
-      futures: "$70",
-      high: "$70",
+      "micro-academy": "$70",
       "pass-5": "$299",
       "pass-10": "$449",
       private: "$125",
@@ -81,8 +80,7 @@ export async function POST(request: Request) {
         const resend = new Resend(process.env.RESEND_API_KEY);
 
         const programLabels: Record<string, string> = {
-          futures: "LTS Futures (Youth)",
-          high: "LTS High (High School)",
+          "micro-academy": "Micro Academy (Ages 8-18)",
           college: "LTS College (College Prep)",
           private: "1-on-1 Private Training",
         };

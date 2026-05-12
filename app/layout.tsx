@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   title: "LTS Elite Prep | Basketball Development in Vancouver",
   description:
-    "Vancouver's premium basketball development program. Programs for ages 8–22 — Futures, High, and College. Book your session today!",
+    "Vancouver's premium basketball development program. Programs for ages 8–22 — Micro Academy and College. Book your session today!",
   keywords: "basketball training, Vancouver, youth basketball, college prep, LTS Elite Prep",
   openGraph: {
     title: "LTS Elite Prep | Basketball Development",
