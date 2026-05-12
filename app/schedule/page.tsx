@@ -71,11 +71,12 @@ function PublicCalendar({
             <div
               key={toDateStr(date)}
               className={`aspect-square rounded-2xl p-2 transition-all border flex flex-col items-center justify-center gap-1
-                ${hasClasses ? 'bg-white/5 border-white/10' : 'border-transparent opacity-20'}
-                ${isToday ? 'border-white/40' : ''}
+                ${hasClasses ? 'bg-white/5 border-white/10' : ''}
+                ${!hasClasses && !isToday ? 'border-transparent opacity-20' : ''}
+                ${!hasClasses && isToday ? 'border-transparent opacity-60' : ''}
               `}
             >
-              <span className={`text-sm font-bold ${isToday ? 'text-white' : 'text-white/60'}`}>{date.getDate()}</span>
+              <span className={`text-sm font-bold ${isToday ? 'text-white' : hasClasses ? 'text-white/80' : 'text-white/60'}`}>{date.getDate()}</span>
               <div className="flex gap-1">
                 {dayClasses.map((c, idx) => (
                   <div key={idx} className={`w-1.5 h-1.5 rounded-full ${(c.program === 'micro-academy' || c.program === 'futures' || c.program === 'high') ? 'bg-white' : 'bg-white/20'}`} />

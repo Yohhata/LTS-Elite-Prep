@@ -213,15 +213,23 @@ function BookPageInner() {
     getClasses();
   }, []);
 
+  // micro-academy が選択された場合、レガシーID (futures, high) もマッチさせる
+  const matchesProgram = (classProgram: string, selectedProgram: string) => {
+    if (selectedProgram === 'micro-academy') {
+      return classProgram === 'micro-academy' || classProgram === 'futures' || classProgram === 'high';
+    }
+    return classProgram === selectedProgram;
+  };
+
   const availableDates = useMemo(() => {
     return classes
-      .filter(c => c.program === form.program)
+      .filter(c => matchesProgram(c.program, form.program))
       .map(c => c.class_date);
   }, [classes, form.program]);
   
   const selectedDayClasses = useMemo(() => {
     if (!form.preferred_date) return [];
-    return classes.filter(c => c.class_date === form.preferred_date && c.program === form.program);
+    return classes.filter(c => c.class_date === form.preferred_date && matchesProgram(c.program, form.program));
   }, [form.preferred_date, classes, form.program]);
 
   const TOTAL_STEPS = 3;
