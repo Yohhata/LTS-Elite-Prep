@@ -77,7 +77,7 @@ function PublicCalendar({
               <span className={`text-sm font-bold ${isToday ? 'text-[#F97316]' : 'text-white'}`}>{date.getDate()}</span>
               <div className="flex gap-1">
                 {dayClasses.map((c, idx) => (
-                  <div key={idx} className={`w-1.5 h-1.5 rounded-full ${c.program === 'micro-academy' ? 'bg-orange-500' : c.program === 'college' ? 'bg-blue-500' : 'bg-green-500'}`} />
+                  <div key={idx} className={`w-1.5 h-1.5 rounded-full ${(c.program === 'micro-academy' || c.program === 'futures' || c.program === 'high') ? 'bg-orange-500' : c.program === 'college' ? 'bg-blue-500' : 'bg-green-500'}`} />
                 ))}
               </div>
             </div>
@@ -176,10 +176,14 @@ function ScheduleInner() {
                         <span className="text-[10px] font-black text-[#F97316] uppercase tracking-widest block mb-1">
                           {new Date(c.class_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                         </span>
-                        <h3 className="font-black text-lg uppercase tracking-tight group-hover:text-[#F97316] transition-colors">{c.title}</h3>
+                        <h3 className="font-black text-lg uppercase tracking-tight group-hover:text-[#F97316] transition-colors">
+                          {(c.program === 'futures' || c.program === 'high') ? 'Micro Academy' : c.title}
+                        </h3>
                       </div>
                       <div className="px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                        <span className="text-[10px] font-black uppercase text-white/40">{c.program}</span>
+                        <span className="text-[10px] font-black uppercase text-white/40">
+                          {(c.program === 'futures' || c.program === 'high') ? 'Micro Academy' : c.program}
+                        </span>
                       </div>
                     </div>
                     <div className="space-y-2">
