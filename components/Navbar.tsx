@@ -52,15 +52,14 @@ export default function Navbar() {
 
         {/* ── ロゴ ── */}
         <Link href="/" onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2.5 group">
-          <Image 
-            src="/logo/logo1.png" 
-            alt="LTS Elite Prep" 
-            width={240} 
-            height={80} 
-            className="h-12 sm:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]" 
-            priority
-          />
+              className="flex items-center gap-3 group">
+          <div className="w-10 h-10 bg-white flex items-center justify-center rotate-[-10deg] transition-transform duration-500 group-hover:rotate-0">
+            <span className="text-black font-black text-sm tracking-tighter">LTS</span>
+          </div>
+          <div className="flex flex-col -gap-1">
+            <span className="text-white font-black tracking-tighter text-2xl leading-none">ELITE</span>
+            <span className="text-white/40 font-black tracking-tighter text-[10px] leading-none uppercase">Basketball Prep</span>
+          </div>
         </Link>
 
         {/* ── デスクトップナビ ── */}
@@ -111,8 +110,8 @@ export default function Navbar() {
           ))}
           <Link href={CTA.href}
                 onClick={() => setMenuOpen(false)}
-                className="mt-6 btn-accent font-black py-4 rounded-xl
-                           text-center text-black">
+                className="mt-6 bg-white text-black font-black py-4 rounded-xl
+                           text-center hover:bg-white/90">
             {CTA.label}
           </Link>
         </nav>

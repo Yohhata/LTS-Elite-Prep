@@ -267,13 +267,8 @@ function HeroSection() {
       />
 
       {/* gradient overlay with warm tint */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#0a0a0a]/60 to-[#0a0a0a]" />
-
-      {/* subtle warm glow at top-right */}
-      <div
-        className="absolute top-0 right-0 w-[600px] h-[600px]
-                   bg-[#F97316]/5 rounded-full blur-[120px] pointer-events-none"
-      />
+      {/* gradient overlay with white tint */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-black/60 to-[#0a0a0a]" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pt-28 pb-20">
         {/* Badge */}
@@ -288,9 +283,9 @@ function HeroSection() {
                      opacity-0 animate-fade-up delay-200"
         >
           {HERO.heading.map((line, i) => (
-            <span key={i} className="block">
+            <span key={i} className="block text-white">
               {i === 1 ? (
-                <em className="gradient-text not-italic">{line}</em>
+                <em className="text-white/40 not-italic">{line}</em>
               ) : (
                 line
               )}
@@ -346,7 +341,7 @@ function TickerSection() {
                 className="text-xs font-bold tracking-[0.25em] text-white/15"
               >
                 {item}
-                <span className="ml-16 text-[#F97316]/20">●</span>
+                <span className="ml-16 text-[#ffffff]/20">●</span>
               </span>
             ))}
           </span>
@@ -366,10 +361,10 @@ function StatsSection() {
             <div key={label} className="reveal">
               <div className="flex justify-center mb-3">
                 <div
-                  className="w-10 h-10 rounded-xl bg-[#F97316]/10
+                  className="w-10 h-10 rounded-xl bg-[#ffffff]/10
                               flex items-center justify-center"
                 >
-                  <Icon className="w-5 h-5 text-[#F97316]" />
+                  <Icon className="w-5 h-5 text-[#ffffff]" />
                 </div>
               </div>
               <p className="text-3xl sm:text-4xl font-extrabold text-white mb-1">
@@ -406,11 +401,10 @@ function ProgramsSection() {
             <div
               key={program.id}
               style={{ transitionDelay: `${i * 80}ms` }}
-              className={`reveal card card-warm relative bg-[#111]
-                         border border-white/7 rounded-2xl p-7 flex flex-col
-                         ${program.featured
-                  ? "md:scale-105 md:z-10 border-[#F97316]/20 shadow-2xl shadow-black/60"
-                  : ""
+              className={`reveal card relative rounded-2xl p-7 flex flex-col transition-all duration-500
+                          ${program.featured
+                  ? "md:scale-105 md:z-10 bg-white text-black shadow-2xl"
+                  : "bg-[#111] border border-white/5 text-white hover:border-white/20"
                 }`}
             >
               {/* Badge */}
@@ -449,7 +443,7 @@ function ProgramsSection() {
                 href={program.href}
                 className={`block text-center font-black py-4 rounded-xl
                            text-sm transition-all ${program.featured
-                    ? "btn-accent"
+                    ? "bg-black text-white hover:bg-black/90 shadow-xl"
                     : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
                   }`}
               >
@@ -472,10 +466,13 @@ function PactSection() {
           {/* Left: Text */}
           <div className="reveal">
             <SectionLabel text="Our Philosophy" />
-            <h2 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-6">
-              The{" "}
-              <span className="gradient-text">#PACT</span>
-            </h2>
+            <div className="w-10 h-10 bg-white flex items-center justify-center rotate-[-10deg]">
+              <span className="text-black font-black text-sm tracking-tighter">LTS</span>
+            </div>
+            <div className="flex flex-col -gap-1">
+              <span className="text-white font-black tracking-tighter text-2xl leading-none">ELITE</span>
+              <span className="text-white/40 font-black tracking-tighter text-[10px] leading-none uppercase">Basketball Prep</span>
+            </div>
             <p className="text-white/50 text-lg leading-relaxed mb-4">
               Every athlete at LTS Elite Prep makes a personal commitment — a
               PACT to their own development.
@@ -488,7 +485,7 @@ function PactSection() {
             <Link
               href="/book"
               className="inline-flex items-center gap-2
-                         btn-accent font-bold px-6 py-3 rounded-xl text-sm
+                         bg-white text-black font-bold px-6 py-3 rounded-xl text-sm
                          group"
             >
               Make Your PACT
@@ -604,7 +601,7 @@ function TestimonialsSection() {
                 {Array.from({ length: stars }).map((_, j) => (
                   <Star
                     key={j}
-                    className="w-4 h-4 text-[#F97316] fill-[#F97316]"
+                    className="w-4 h-4 text-[#ffffff] fill-[#ffffff]"
                   />
                 ))}
               </div>
@@ -635,7 +632,7 @@ function CtaSection() {
       {/* Warm glow */}
       <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2
-                   w-[800px] h-[400px] bg-[#F97316]/5
+                   w-[800px] h-[400px] bg-[#ffffff]/5
                    rounded-full blur-[120px] pointer-events-none"
       />
 

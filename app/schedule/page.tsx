@@ -71,13 +71,13 @@ function PublicCalendar({
               key={toDateStr(date)}
               className={`aspect-square rounded-2xl p-2 transition-all border flex flex-col items-center justify-center gap-1
                 ${hasClasses ? 'bg-white/5 border-white/10' : 'border-transparent opacity-20'}
-                ${isToday ? 'border-[#F97316]/50' : ''}
+                ${isToday ? 'border-white/40' : ''}
               `}
             >
-              <span className={`text-sm font-bold ${isToday ? 'text-[#F97316]' : 'text-white'}`}>{date.getDate()}</span>
+              <span className={`text-sm font-bold ${isToday ? 'text-white' : 'text-white/60'}`}>{date.getDate()}</span>
               <div className="flex gap-1">
                 {dayClasses.map((c, idx) => (
-                  <div key={idx} className={`w-1.5 h-1.5 rounded-full ${(c.program === 'micro-academy' || c.program === 'futures' || c.program === 'high') ? 'bg-orange-500' : c.program === 'college' ? 'bg-blue-500' : 'bg-green-500'}`} />
+                  <div key={idx} className={`w-1.5 h-1.5 rounded-full ${(c.program === 'micro-academy' || c.program === 'futures' || c.program === 'high') ? 'bg-white' : 'bg-white/20'}`} />
                 ))}
               </div>
             </div>
@@ -87,15 +87,15 @@ function PublicCalendar({
 
       <div className="mt-8 flex flex-wrap gap-4 pt-8 border-t border-white/5">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-orange-500" />
+          <div className="w-2 h-2 rounded-full bg-white" />
           <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Micro Academy</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-blue-500" />
+          <div className="w-2 h-2 rounded-full bg-white/40" />
           <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">LTS College</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-green-500" />
+          <div className="w-2 h-2 rounded-full bg-white/20" />
           <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Private Training</span>
         </div>
       </div>
@@ -124,17 +124,20 @@ function ScheduleInner() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#F97316] selection:text-white pb-20">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#ffffff] selection:text-white pb-20">
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
-              <span className="text-black font-black text-xs">LTS</span>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-white flex items-center justify-center rotate-[-10deg]">
+              <span className="text-black font-black text-sm tracking-tighter">LTS</span>
             </div>
-            <span className="font-black tracking-tighter text-xl">ELITE PREP</span>
+            <div className="flex flex-col -gap-1">
+              <span className="text-white font-black tracking-tighter text-2xl leading-none">ELITE</span>
+              <span className="text-white/40 font-black tracking-tighter text-[10px] leading-none uppercase">Basketball Prep</span>
+            </div>
           </Link>
-          <Link href="/book" className="bg-white text-black px-6 py-2.5 rounded-full font-black text-xs uppercase hover:scale-105 transition-all">
+          <Link href="/book" className="bg-white text-black px-6 py-2.5 rounded-full font-black text-xs uppercase hover:bg-white/90 transition-all">
             Book Now
           </Link>
         </div>
@@ -173,10 +176,10 @@ function ScheduleInner() {
                   <div key={c.id} className="bg-[#111] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all group">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <span className="text-[10px] font-black text-[#F97316] uppercase tracking-widest block mb-1">
+                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-1">
                           {new Date(c.class_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                         </span>
-                        <h3 className="font-black text-lg uppercase tracking-tight group-hover:text-[#F97316] transition-colors">
+                        <h3 className="font-black text-lg uppercase tracking-tight group-hover:text-white transition-colors">
                           {(c.program === 'futures' || c.program === 'high') ? 'Micro Academy' : c.title}
                         </h3>
                       </div>
@@ -209,7 +212,7 @@ function ScheduleInner() {
               )}
             </div>
             
-            <Link href="/book" className="block w-full bg-[#F97316] text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-[#F97316]/20 mt-8">
+            <Link href="/book" className="block w-full bg-white text-black text-center py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-white/90 active:scale-[0.98] transition-all shadow-2xl mt-8">
               Book A Session
             </Link>
           </div>
