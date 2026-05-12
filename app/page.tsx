@@ -412,7 +412,7 @@ function ProgramsSection() {
                 <span
                   className={`text-[10px] font-black tracking-[0.2em] uppercase px-3 py-1.5 rounded-full border
                     ${program.featured 
-                      ? "bg-white text-black border-white" 
+                      ? "bg-black text-white border-black" 
                       : "bg-white/5 text-white/40 border-white/10"}`}
                 >
                   {program.badge}
@@ -420,10 +420,10 @@ function ProgramsSection() {
               </div>
 
               <h3 className="text-3xl font-extrabold mb-1">{program.name}</h3>
-              <p className="text-sm text-white/30 font-bold mb-4 uppercase tracking-wide">
+              <p className={`text-sm font-bold mb-4 uppercase tracking-wide ${program.featured ? 'text-black/40' : 'text-white/30'}`}>
                 {program.tagline}
               </p>
-              <p className="text-white/50 text-sm leading-relaxed mb-8">
+              <p className={`text-sm leading-relaxed mb-8 ${program.featured ? 'text-black/60' : 'text-white/50'}`}>
                 {program.desc}
               </p>
 
@@ -431,9 +431,9 @@ function ProgramsSection() {
                 {program.features.map((f) => (
                   <li
                     key={f}
-                    className="flex items-center gap-2.5 text-sm text-white/60"
+                    className={`flex items-center gap-2.5 text-sm ${program.featured ? 'text-black/80' : 'text-white/60'}`}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${program.featured ? 'bg-black/20' : 'bg-white/20'}`} />
                     {f}
                   </li>
                 ))}
