@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 // ── カレンダーコンポーネント (Display Only) ───────────────────────
 
@@ -129,13 +130,14 @@ function ScheduleInner() {
       <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-white flex items-center justify-center rotate-[-10deg]">
-              <span className="text-black font-black text-sm tracking-tighter">LTS</span>
-            </div>
-            <div className="flex flex-col -gap-1">
-              <span className="text-white font-black tracking-tighter text-2xl leading-none">ELITE</span>
-              <span className="text-white/40 font-black tracking-tighter text-[10px] leading-none uppercase">Basketball Prep</span>
-            </div>
+            <Image 
+              src="/logo/logo1.png" 
+              alt="LTS Elite Prep" 
+              width={180} 
+              height={60} 
+              className="h-10 sm:h-12 w-auto object-contain brightness-0 invert" 
+              priority
+            />
           </Link>
           <Link href="/book" className="bg-white text-black px-6 py-2.5 rounded-full font-black text-xs uppercase hover:bg-white/90 transition-all">
             Book Now
