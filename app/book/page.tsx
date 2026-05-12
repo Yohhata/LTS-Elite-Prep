@@ -139,8 +139,8 @@ function Calendar({
         {daysInMonth.map((date, i) => {
           if (!date) return <div key={`empty-${i}`} className="aspect-square" />;
           const dateStr = toDateStr(date);
-          const active = hasClass(date);
-          const selected = isSelected(date);
+          const isSelected = selectedDate === dateStr;
+          const active = availableDates.includes(dateStr);
 
           return (
             <button
@@ -148,12 +148,12 @@ function Calendar({
               type="button"
               onClick={() => onSelect(dateStr)}
               className={`aspect-square rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center relative
-                ${selected ? 'bg-white text-black' : 'text-white hover:bg-white/5'}
-                ${!active && !selected ? 'opacity-20' : ''}
+                ${isSelected ? 'bg-white text-black' : 'text-white hover:bg-white/5'}
+                ${!active && !isSelected ? 'opacity-20' : ''}
               `}
             >
               {date.getDate()}
-              {active && !selected && <span className="absolute bottom-2 w-1 h-1 rounded-full bg-white animate-pulse" />}
+              {active && !isSelected && <span className="absolute bottom-2 w-1 h-1 rounded-full bg-white" />}
             </button>
           );
         })}
@@ -369,9 +369,9 @@ function BookPageInner() {
                   <div className="pt-4">
                     <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-4 block">Select a Session From List</label>
                     <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                      {classes.filter(c => c.program === form.program).length > 0 ? (
+                      {classes.filter(c => matchesProgram(c.program, form.program)).length > 0 ? (
                         classes
-                          .filter(c => c.program === form.program)
+                          .filter(c => matchesProgram(c.program, form.program))
                           .sort((a, b) => new Date(a.class_date + 'T00:00:00').getTime() - new Date(b.class_date + 'T00:00:00').getTime())
                           .map(c => {
                             const isSelected = form.preferred_date === c.class_date && form.preferred_time === `${c.start_time} - ${c.end_time}`;
