@@ -88,7 +88,7 @@ export async function POST(request: Request) {
         // 1. 管理者（あなた）への通知
         const { data: adminData, error: adminError } = await resend.emails.send({
           from: "LTS System <info@ltseliteprep.ca>",
-          to: "yoshimasa@w-japan.net",
+          to: "paolo@ltseliteprep.ca",
           subject: `New Session Booking: ${name} — ${programLabels[program] || program}`,
           html: `
             <h2>New Booking Request 🏀</h2>
