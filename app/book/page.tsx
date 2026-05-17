@@ -294,20 +294,6 @@ function BookPageInner() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {step === 1 && (
-            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4">
-              <div>
-                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Full Name</label>
-                <input required type="text" placeholder="JORDAN SMITH" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Email Address</label>
-                <input required type="email" placeholder="JORDAN@EXAMPLE.COM" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
-              </div>
-              <button type="button" onClick={() => form.name && form.email && setStep(2)} className="w-full bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 mt-4">NEXT STEP <ArrowRight className="w-5 h-5" /></button>
-            </div>
-          )}
-
-          {step === 2 && (
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
               <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Select Program</label>
               <div className="grid grid-cols-1 gap-3">
@@ -323,11 +309,10 @@ function BookPageInner() {
                 ))}
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
                 <button 
                   type="button" 
-                  onClick={() => setStep(3)} 
-                  className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2"
+                  onClick={() => setStep(2)} 
+                  className="w-full bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2"
                 >
                   CHOOSE DATE 
                   <ArrowRight className="w-5 h-5" />
@@ -336,10 +321,10 @@ function BookPageInner() {
             </div>
           )}
 
-          {step === 3 && (
+          {step === 2 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-              <button type="button" onClick={() => setStep(2)} className="flex items-center gap-2 text-white/40 hover:text-white text-[10px] font-black uppercase transition-all mb-2">
-                <ChevronLeft className="w-3 h-3" /> Previous: Select Level
+              <button type="button" onClick={() => setStep(1)} className="flex items-center gap-2 text-white/40 hover:text-white text-[10px] font-black uppercase transition-all mb-2">
+                <ChevronLeft className="w-3 h-3" /> Previous: Select Program
               </button>
 
               <div>
@@ -387,10 +372,40 @@ function BookPageInner() {
               </div>
 
               <div className="flex gap-3 pt-4">
+                <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
+                <button 
+                  type="button" 
+                  onClick={() => setStep(3)}
+                  disabled={!form.preferred_date || !form.preferred_time} 
+                  className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-30"
+                >
+                  PERSONAL INFO
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4">
+              <button type="button" onClick={() => setStep(2)} className="flex items-center gap-2 text-white/40 hover:text-white text-[10px] font-black uppercase transition-all mb-2">
+                <ChevronLeft className="w-3 h-3" /> Previous: Choose Date
+              </button>
+
+              <div>
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Full Name</label>
+                <input required type="text" placeholder="JORDAN SMITH" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Email Address</label>
+                <input required type="email" placeholder="JORDAN@EXAMPLE.COM" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
+              </div>
+
+              <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setStep(2)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>
                 <button 
                   type="submit" 
-                  disabled={(!form.preferred_date || !form.preferred_time) || loading} 
+                  disabled={(!form.name || !form.email) || loading} 
                   className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-30"
                 >
                   {loading ? 'SENDING...' : 'CONFIRM BOOKING'}
