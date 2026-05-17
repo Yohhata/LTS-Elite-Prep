@@ -35,6 +35,11 @@ const PROGRAMS = [
     tagline: "Elite Commitment ($449)",
   },
   {
+    id: "pass-usage",
+    name: "ALREADY HAVE PASS",
+    tagline: "Book your next session",
+  },
+  {
     id: "private",
     name: "1-on-1 Private Training",
     tagline: "Personalized Development ($125)",
@@ -208,9 +213,9 @@ function BookPageInner() {
     getClasses();
   }, []);
 
-  // pass-5 や pass-10 が選択された場合、対象となるクラス (micro-academy, futures, high) を表示
+  // pass-5, pass-10, pass-usage が選択された場合、対象となるクラス (micro-academy, futures, high) を表示
   const matchesProgram = (classProgram: string, selectedProgram: string) => {
-    if (selectedProgram === 'pass-5' || selectedProgram === 'pass-10') {
+    if (selectedProgram === 'pass-5' || selectedProgram === 'pass-10' || selectedProgram === 'pass-usage') {
       return classProgram === 'micro-academy' || classProgram === 'futures' || classProgram === 'high';
     }
     return classProgram === selectedProgram;
@@ -237,6 +242,7 @@ function BookPageInner() {
     }
 
     setLoading(true);
+    setError("");
     const isPass = form.program === 'pass-5' || form.program === 'pass-10';
 
     try {
@@ -250,7 +256,7 @@ function BookPageInner() {
           program: form.program,
           preferred_date: form.preferred_date || null,
           preferred_time: form.preferred_time || null,
-          message: isPass ? "PASS PURCHASE / FIRST SESSION" : (form.message || null),
+          message: form.program === 'pass-usage' ? "PASS USAGE" : (isPass ? "PASS PURCHASE / FIRST SESSION" : (form.message || null)),
         }),
       });
 
@@ -400,6 +406,12 @@ function BookPageInner() {
                 <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Email Address</label>
                 <input required type="email" placeholder="JORDAN@EXAMPLE.COM" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none" />
               </div>
+
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-bold p-4 rounded-xl text-center">
+                  {error}
+                </div>
+              )}
 
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setStep(2)} className="w-1/3 bg-[#111] text-white/50 font-bold py-5 rounded-2xl border border-white/5">BACK</button>

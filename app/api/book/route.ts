@@ -36,9 +36,36 @@ export async function POST(request: Request) {
       "micro-academy": "$70",
       "pass-5": "$299",
       "pass-10": "$449",
+      "pass-usage": "Pre-paid (Pass)",
       private: "$125",
     };
     const amount = priceMap[program] || "TBD";
+
+    // Validate pass remaining sessions if pass-usage
+    if (program === "pass-usage") {
+      const { data: pastBookings, error: fetchError } = await supabaseServer
+        .from("bookings")
+        .select("program")
+        .eq("email", email.trim().toLowerCase())
+        .neq("status", "cancelled");
+
+      if (fetchError) {
+        console.error("Fetch Error:", fetchError);
+        return NextResponse.json({ error: "Failed to validate pass usage." }, { status: 500 });
+      }
+
+      let capacity = 0;
+      let used = 0;
+      pastBookings?.forEach(b => {
+        if (b.program === "pass-5") { capacity += 5; used += 1; }
+        else if (b.program === "pass-10") { capacity += 10; used += 1; }
+        else if (b.program === "pass-usage") { used += 1; }
+      });
+
+      if (capacity - used <= 0) {
+        return NextResponse.json({ error: "No active session pass found or all sessions have been used. Please purchase a new pass." }, { status: 400 });
+      }
+    }
 
     // Supabase に保存
     let dbData = null;
