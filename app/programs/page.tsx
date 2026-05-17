@@ -58,7 +58,7 @@ const PROGRAMS = [
     schedule: "Tue & Thu (High) · Sat (Futures)",
     location: "Vancouver, BC",
     groupSize: "8 – 16 athletes",
-    price: "$70 / session",
+    price: "Session Pass Required",
     color: "from-orange-500/20 to-red-500/10",
     borderColor: "border-orange-500/20",
     featured: true,
@@ -254,7 +254,7 @@ export default function ProgramsPage() {
                 {/* CTA */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link
-                    href={program.id === 'college' ? '/college-contact' : `/book?program=${program.id}`}
+                    href={program.id === 'college' ? '/college-contact' : '/register'}
                     className="btn-accent inline-flex items-center justify-center gap-2
                                font-bold px-8 py-3.5 rounded-xl group"
                   >

@@ -11,13 +11,11 @@ export async function POST(request: Request) {
     }
 
     const priceMap: Record<string, string> = {
-      "drop-in": "$70",
       "pass-5": "$299",
       "pass-10": "$449",
     };
 
     const typeLabels: Record<string, string> = {
-      "drop-in": "Single Drop-in",
       "pass-5": "5-Session Pass",
       "pass-10": "10-Session Pass",
     };

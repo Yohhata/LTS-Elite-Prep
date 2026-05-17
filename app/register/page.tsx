@@ -26,16 +26,6 @@ export default function RegisterPage() {
 
   const OPTIONS = [
     {
-      id: "drop-in",
-      name: "Single Drop-in",
-      price: "$70",
-      desc: "Perfect for a single high-intensity trial session.",
-      features: ["2-Hour Session", "Pro Coaching", "Full Facility Access"],
-      cta: "GET DROP-IN",
-      highlight: false,
-      href: "/book?program=futures"
-    },
-    {
       id: "pass-5",
       name: "5-Session Pass",
       price: "$299",
@@ -69,7 +59,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6">
           {OPTIONS.map((opt, i) => (
             <div
               key={opt.id}

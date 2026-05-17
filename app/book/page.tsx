@@ -25,11 +25,6 @@ import {
 
 const PROGRAMS = [
   {
-    id: "micro-academy",
-    name: "Micro Academy (Drop-in)",
-    tagline: "Ages 8-18 ($70)",
-  },
-  {
     id: "pass-5",
     name: "5-Session Pass",
     tagline: "Flexible Growth ($299)",
@@ -56,7 +51,7 @@ const EMPTY_FORM: BookingInsert = {
   name: "",
   email: "",
   phone: "",
-  program: "micro-academy",
+  program: "pass-5",
   preferred_date: "",
   preferred_time: "",
   message: "",
@@ -179,7 +174,7 @@ function BookPageInner() {
   const [classes, setClasses] = useState<any[]>([]);
   const [form, setForm] = useState<BookingInsert>({
     ...EMPTY_FORM,
-    program: (searchParams.get("program") as any) || "micro-academy",
+    program: (searchParams.get("program") as any) || "pass-5",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
