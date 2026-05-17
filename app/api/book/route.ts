@@ -39,13 +39,15 @@ export async function POST(request: Request) {
       "pass-usage": "Pre-paid (Pass)",
       private: "$125",
     };
-    const amount = priceMap[program] || "TBD";
+    const isPassUsage = message === "PASS USAGE" || message?.startsWith("PASS USAGE");
+    let amount = priceMap[program] || "TBD";
+    if (isPassUsage) amount = "Pre-paid (Pass)";
 
     // Validate pass remaining sessions if pass-usage
-    if (program === "pass-usage") {
+    if (isPassUsage) {
       const { data: pastBookings, error: fetchError } = await supabaseServer
         .from("bookings")
-        .select("program")
+        .select("program, message")
         .eq("email", email.trim().toLowerCase())
         .neq("status", "cancelled");
 
@@ -57,9 +59,18 @@ export async function POST(request: Request) {
       let capacity = 0;
       let used = 0;
       pastBookings?.forEach(b => {
-        if (b.program === "pass-5") { capacity += 5; used += 1; }
-        else if (b.program === "pass-10") { capacity += 10; used += 1; }
-        else if (b.program === "pass-usage") { used += 1; }
+        const isPastUsage = b.message?.includes("PASS USAGE");
+        if (b.program === "pass-5" && !isPastUsage) { 
+          capacity += 5; 
+          if (b.message !== 'ADMIN MANUAL ADDITION') used += 1; 
+        }
+        else if (b.program === "pass-10" && !isPastUsage) { 
+          capacity += 10; 
+          if (b.message !== 'ADMIN MANUAL ADDITION') used += 1; 
+        }
+        else if (b.program === "pass-usage" || isPastUsage) { 
+          used += 1; 
+        }
       });
 
       if (capacity - used <= 0) {

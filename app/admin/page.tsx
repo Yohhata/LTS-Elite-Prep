@@ -766,16 +766,25 @@ function PassHoldersTab() {
     if (data) {
       const emailMap = new Map<string, any>();
       data.forEach(b => {
-        if (b.program === "pass-5" || b.program === "pass-10" || b.program === "pass-usage") {
+        const isUsage = b.message?.includes("PASS USAGE");
+        if (b.program === "pass-5" || b.program === "pass-10" || b.program === "pass-usage" || isUsage) {
           const email = b.email.toLowerCase().trim();
           if (!emailMap.has(email)) {
             emailMap.set(email, { name: b.name, email: email, capacity: 0, used: 0 });
           }
           const user = emailMap.get(email);
-          if (b.program === "pass-5") user.capacity += 5;
-          if (b.program === "pass-10") user.capacity += 10;
-          // Count EVERY pass booking as 1 usage (since they pick a date during purchase or usage)
-          user.used += 1;
+          
+          if (b.program === "pass-5" && !isUsage) { 
+            user.capacity += 5; 
+            if (b.message !== 'ADMIN MANUAL ADDITION') user.used += 1; 
+          }
+          else if (b.program === "pass-10" && !isUsage) { 
+            user.capacity += 10; 
+            if (b.message !== 'ADMIN MANUAL ADDITION') user.used += 1; 
+          }
+          else { 
+            user.used += 1; 
+          }
         }
       });
       
@@ -789,6 +798,56 @@ function PassHoldersTab() {
   useEffect(() => {
     fetchPassHolders();
   }, []);
+
+  async function adjustCapacity(holder: any, amount: number) {
+    if (!confirm(`Are you sure you want to add ${amount} sessions to ${holder.name}?`)) return;
+    setRefreshing(true);
+    const { error } = await supabase.from('bookings').insert({
+      name: holder.name,
+      email: holder.email,
+      program: amount === 5 ? 'pass-5' : 'pass-10',
+      message: 'ADMIN MANUAL ADDITION'
+    });
+    if (!error) fetchPassHolders();
+    else setRefreshing(false);
+  }
+
+  async function adjustUsage(holder: any) {
+    if (!confirm(`Are you sure you want to manually deduct 1 session from ${holder.name}?`)) return;
+    setRefreshing(true);
+    const { error } = await supabase.from('bookings').insert({
+      name: holder.name,
+      email: holder.email,
+      program: 'micro-academy',
+      message: 'PASS USAGE - ADMIN MANUAL DEDUCTION'
+    });
+    if (!error) fetchPassHolders();
+    else setRefreshing(false);
+  }
+
+  async function removeUser(holder: any) {
+    if (!confirm(`Are you sure you want to REMOVE ALL PASSES for ${holder.name}? This will cancel all their active passes.`)) return;
+    setRefreshing(true);
+    const { data: userBookings } = await supabase
+      .from('bookings')
+      .select('id, program, message')
+      .eq('email', holder.email)
+      .neq('status', 'cancelled');
+      
+    if (userBookings) {
+      const idsToCancel = userBookings.filter(b => 
+        b.program === 'pass-5' || 
+        b.program === 'pass-10' || 
+        b.program === 'pass-usage' || 
+        (b.program === 'micro-academy' && b.message?.includes('PASS USAGE'))
+      ).map(b => b.id);
+      
+      if (idsToCancel.length > 0) {
+        await supabase.from('bookings').update({ status: 'cancelled' }).in('id', idsToCancel);
+      }
+    }
+    fetchPassHolders();
+  }
 
   if (loading && !refreshing) {
     return <div className="text-white/50 text-center py-20 font-bold tracking-widest text-sm uppercase animate-pulse">Loading Pass Holders...</div>;
@@ -819,7 +878,7 @@ function PassHoldersTab() {
                 <p className="text-white/50 text-xs truncate flex items-center gap-2"><Mail className="w-3 h-3"/> {holder.email}</p>
               </div>
               
-              <div className="flex items-center justify-between pt-4 border-t border-white/5">
+              <div className="flex items-center justify-between pt-4 border-t border-white/5 mb-4">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Capacity</p>
                   <p className="font-bold text-lg">{holder.capacity}</p>
@@ -832,6 +891,12 @@ function PassHoldersTab() {
                   <p className="text-[10px] font-black uppercase tracking-widest text-[#F97316] mb-1">Remaining</p>
                   <p className="font-black text-2xl text-white">{holder.capacity - holder.used}</p>
                 </div>
+              </div>
+              
+              <div className="pt-4 border-t border-white/5 flex gap-2">
+                <button onClick={() => adjustCapacity(holder, 5)} title="Add 5 Sessions" className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-[10px] uppercase transition-all">+ 5 Sess</button>
+                <button onClick={() => adjustUsage(holder)} title="Deduct 1 Session" className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-[10px] uppercase transition-all">- 1 Sess</button>
+                <button onClick={() => removeUser(holder)} title="Remove All Passes" className="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold px-3 py-2 rounded-lg transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
               </div>
             </div>
           ))}

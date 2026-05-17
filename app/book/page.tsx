@@ -253,7 +253,7 @@ function BookPageInner() {
           name: form.name,
           email: form.email,
           phone: form.phone || null,
-          program: form.program,
+          program: form.program === 'pass-usage' ? 'micro-academy' : form.program,
           preferred_date: form.preferred_date || null,
           preferred_time: form.preferred_time || null,
           message: form.program === 'pass-usage' ? "PASS USAGE" : (isPass ? "PASS PURCHASE / FIRST SESSION" : (form.message || null)),
