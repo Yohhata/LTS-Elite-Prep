@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { href: "/book", label: "Book" },
   { href: "/college-contact", label: "College" },
   { href: "/admin", label: "Admin" },
+  { href: "/pass", label: "Pass" },
 ];
 
 const CTA = {
