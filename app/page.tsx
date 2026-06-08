@@ -59,39 +59,8 @@ const PROGRAMS = [
       "Court IQ & Video Analysis",
       "Professional Coaching",
     ],
-    href: "/register",
+    href: "/book",
     cta: "TRAIN NOW",
-  },
-  {
-    id: "pass-5",
-    name: "5-Session Pass",
-    tagline: "Flexibility & Growth",
-    badge: "$299",
-    desc: "Perfect for athletes who want to train consistently. Valid for any Micro Academy session throughout the season.",
-    features: [
-      "$59.80 per session",
-      "Valid for 90 days",
-      "Easy online scheduling",
-      "Priority waitlist access",
-    ],
-    href: "/book",
-    cta: "GET PASS",
-  },
-  {
-    id: "pass-10",
-    name: "10-Session Pass",
-    tagline: "The Elite Commitment",
-    badge: "$449 — Best Value",
-    featured: false,
-    desc: "Our best value option for serious athletes. Dedicated to long-term development and maximum results.",
-    features: [
-      "$44.90 per session (Save $250+)",
-      "Valid for 120 days",
-      "Guaranteed spot in sessions",
-      "Monthly progress review",
-    ],
-    href: "/book",
-    cta: "GET PASS",
   },
   {
     id: "college",
@@ -105,7 +74,7 @@ const PROGRAMS = [
       "Recruiting & Film support",
       "Data-driven tracking",
     ],
-    href: "/contact",
+    href: "/college-contact",
     cta: "INQUIRE NOW",
   },
 ];
@@ -392,11 +361,11 @@ function ProgramsSection() {
             Find Your Level
           </h2>
           <p className="text-white/40 mt-3 max-w-lg mx-auto">
-            Three programs built for where you are — and where you want to go.
+            Programs built for where you are — and where you want to go.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           {PROGRAMS.map((program, i) => (
             <div
               key={program.id}
@@ -439,16 +408,51 @@ function ProgramsSection() {
                 ))}
               </ul>
 
-              <Link
-                href={program.href}
-                className={`block text-center font-black py-4 rounded-xl
-                           text-sm transition-all ${program.featured
-                    ? "bg-black text-white hover:bg-black/90 shadow-xl"
-                    : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
-                  }`}
-              >
-                {program.cta}
-              </Link>
+              {program.id === "micro-academy" ? (
+                <div className="space-y-3 mt-6">
+                  <Link
+                    href="/book?program=pass-5"
+                    className={`block text-center font-black py-4 rounded-xl text-sm transition-all
+                      ${program.featured
+                        ? "border border-black/15 hover:border-black/30 hover:bg-black/5 text-black"
+                        : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
+                      }`}
+                  >
+                    5-DAY PASS ($299)
+                  </Link>
+                  <Link
+                    href="/book?program=pass-10"
+                    className={`block text-center font-black py-4 rounded-xl text-sm transition-all
+                      ${program.featured
+                        ? "bg-black text-white hover:bg-black/90 shadow-xl"
+                        : "bg-white text-black hover:bg-white/90 shadow-xl"
+                      }`}
+                  >
+                    10-DAY PASS ($449)
+                  </Link>
+                  <Link
+                    href="/book?program=pass-usage"
+                    className={`block text-center font-bold py-2 rounded-xl text-xs transition-all uppercase tracking-wider
+                      ${program.featured
+                        ? "text-black/50 hover:text-black hover:underline"
+                        : "text-white/40 hover:text-white hover:underline"
+                      }`}
+                  >
+                    Already have a pass? Book here
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  href={program.href}
+                  className={`block text-center font-black py-4 rounded-xl
+                             text-sm transition-all ${program.featured
+                      ? "bg-black text-white hover:bg-black/90 shadow-xl"
+                      : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
+                    }`}
+                >
+                  {program.cta}
+                </Link>
+              )}
             </div>
           ))}
         </div>
