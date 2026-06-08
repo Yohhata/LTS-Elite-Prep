@@ -25,6 +25,16 @@ import {
 
 const PROGRAMS = [
   {
+    id: "pass-5",
+    name: "5-Session Pass",
+    tagline: "Flexible Growth ($299)",
+  },
+  {
+    id: "pass-10",
+    name: "10-Session Pass",
+    tagline: "Elite Commitment ($449)",
+  },
+  {
     id: "pass-usage",
     name: "ALREADY HAVE PASS",
     tagline: "Book your next session",
