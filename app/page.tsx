@@ -470,12 +470,14 @@ function PactSection() {
           {/* Left: Text */}
           <div className="reveal">
             <SectionLabel text="Our Philosophy" />
-            <div className="w-10 h-10 bg-white flex items-center justify-center rotate-[-10deg]">
-              <span className="text-black font-black text-sm tracking-tighter">LTS</span>
-            </div>
-            <div className="flex flex-col -gap-1">
-              <span className="text-white font-black tracking-tighter text-2xl leading-none">ELITE</span>
-              <span className="text-white/40 font-black tracking-tighter text-[10px] leading-none uppercase">Basketball Prep</span>
+            <div className="mb-6">
+              <Image
+                src="/logo/logo1.png"
+                alt="LTS Elite Prep Logo"
+                width={180}
+                height={60}
+                className="h-12 w-auto object-contain brightness-0 invert"
+              />
             </div>
             <p className="text-white/50 text-lg leading-relaxed mb-4">
               Every athlete at LTS Elite Prep makes a personal commitment — a
