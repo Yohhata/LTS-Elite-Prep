@@ -33,7 +33,7 @@ export default function RegisterPage() {
       features: ["5 Sessions Included", "Flexible Scheduling", "Priority Booking", "Performance Tracking"],
       cta: "GET 5-PASS",
       highlight: true,
-      href: "/book?program=pass-5"
+      href: "/buy-pass"
     },
     {
       id: "pass-10",
@@ -43,7 +43,7 @@ export default function RegisterPage() {
       features: ["10 Sessions Included", "Maximum Value", "1-on-1 Consultation", "Video Analysis Support"],
       cta: "GET 10-PASS",
       highlight: false,
-      href: "/book?program=pass-10"
+      href: "/buy-pass"
     },
   ];
 

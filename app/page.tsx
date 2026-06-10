@@ -411,7 +411,7 @@ function ProgramsSection() {
               {program.id === "micro-academy" ? (
                 <div className="space-y-3 mt-6">
                   <Link
-                    href="/book?program=pass-5"
+                    href="/buy-pass"
                     className={`block text-center font-black py-4 rounded-xl text-sm transition-all
                       ${program.featured
                         ? "border border-black/15 hover:border-black/30 hover:bg-black/5 text-black"
@@ -421,7 +421,7 @@ function ProgramsSection() {
                     5-DAY PASS ($299)
                   </Link>
                   <Link
-                    href="/book?program=pass-10"
+                    href="/buy-pass"
                     className={`block text-center font-black py-4 rounded-xl text-sm transition-all
                       ${program.featured
                         ? "bg-black text-white hover:bg-black/90 shadow-xl"
