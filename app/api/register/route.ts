@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         type: label,
         amount,
         status: "pending_payment"
-      }).then(() => {}).catch(() => {}); // registrations テーブルがない場合もエラーにしない
+      }); // registrations テーブルがない場合は無視する
     }
 
     // 2. Resend で自動返信メール (Invoice)
