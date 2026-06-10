@@ -18,6 +18,7 @@ const LOGO = {
 const NAV_LINKS = [
   { href: "/programs", label: "Programs" },
   { href: "/about", label: "About" },
+  { href: "/buy-pass", label: "Buy Pass" },
   { href: "/book", label: "Book" },
   { href: "/college-contact", label: "College" },
   { href: "/admin", label: "Admin" },

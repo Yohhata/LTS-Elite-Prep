@@ -53,6 +53,18 @@ export interface Booking {
 // フォームから送信するデータの型（id・created_at・status は自動生成されるので不要）
 export type BookingInsert = Omit<Booking, "id" | "created_at" | "status">;
 
+export interface PassHolder {
+  id:              string;
+  created_at:      string;
+  name:            string;
+  email:           string;
+  phone:           string | null;
+  pass_type:       "pass-5" | "pass-10";
+  sessions_total:  number;
+  sessions_used:   number;
+  status:          "active" | "expired" | "cancelled";
+}
+
 export interface ClassSchedule {
   id: string;
   title: string;

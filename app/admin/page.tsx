@@ -765,42 +765,19 @@ function PassHoldersTab() {
   const [passHolders, setPassHolders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   async function fetchPassHolders() {
     setRefreshing(true);
+    setFetchError(null);
     const { data, error } = await supabase
-      .from("bookings")
+      .from("pass_holders")
       .select("*")
-      .neq("status", "cancelled"); // Ignore cancelled bookings for usage counting
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
 
-    if (data) {
-      const emailMap = new Map<string, any>();
-      data.forEach(b => {
-        const isUsage = b.message?.includes("PASS USAGE");
-        if (b.program === "pass-5" || b.program === "pass-10" || b.program === "pass-usage" || isUsage) {
-          const email = b.email.toLowerCase().trim();
-          if (!emailMap.has(email)) {
-            emailMap.set(email, { name: b.name, email: email, capacity: 0, used: 0 });
-          }
-          const user = emailMap.get(email);
-          
-          if (b.program === "pass-5" && !isUsage) { 
-            user.capacity += 5; 
-            if (b.message !== 'ADMIN MANUAL ADDITION') user.used += 1; 
-          }
-          else if (b.program === "pass-10" && !isUsage) { 
-            user.capacity += 10; 
-            if (b.message !== 'ADMIN MANUAL ADDITION') user.used += 1; 
-          }
-          else { 
-            user.used += 1; 
-          }
-        }
-      });
-      
-      const activeHolders = Array.from(emailMap.values()).filter(u => u.capacity > 0 && (u.capacity - u.used) > 0);
-      setPassHolders(activeHolders);
-    }
+    if (error) setFetchError(error.message || "Failed to load pass holders.");
+    if (data) setPassHolders(data);
     setLoading(false);
     setRefreshing(false);
   }
@@ -809,54 +786,40 @@ function PassHoldersTab() {
     fetchPassHolders();
   }, []);
 
-  async function adjustCapacity(holder: any, amount: number) {
-    if (!confirm(`Are you sure you want to add ${amount} sessions to ${holder.name}?`)) return;
+  async function addSessions(holder: any, count: number) {
+    if (!confirm(`Add ${count} sessions to ${holder.name}?`)) return;
     setRefreshing(true);
-    const { error } = await supabase.from('bookings').insert({
-      name: holder.name,
-      email: holder.email,
-      program: amount === 5 ? 'pass-5' : 'pass-10',
-      message: 'ADMIN MANUAL ADDITION'
-    });
+    const { error } = await supabase
+      .from("pass_holders")
+      .update({ sessions_total: holder.sessions_total + count })
+      .eq("id", holder.id);
     if (!error) fetchPassHolders();
     else setRefreshing(false);
   }
 
-  async function adjustUsage(holder: any) {
-    if (!confirm(`Are you sure you want to manually deduct 1 session from ${holder.name}?`)) return;
+  async function deductSession(holder: any) {
+    if (!confirm(`Manually deduct 1 session from ${holder.name}?`)) return;
     setRefreshing(true);
-    const { error } = await supabase.from('bookings').insert({
-      name: holder.name,
-      email: holder.email,
-      program: 'micro-academy',
-      message: 'PASS USAGE - ADMIN MANUAL DEDUCTION'
-    });
+    const newUsed = holder.sessions_used + 1;
+    const updates: any = { sessions_used: newUsed };
+    if (newUsed >= holder.sessions_total) updates.status = "expired";
+    const { error } = await supabase
+      .from("pass_holders")
+      .update(updates)
+      .eq("id", holder.id);
     if (!error) fetchPassHolders();
     else setRefreshing(false);
   }
 
-  async function removeUser(holder: any) {
-    if (!confirm(`Are you sure you want to REMOVE ALL PASSES for ${holder.name}? This will cancel all their active passes.`)) return;
+  async function cancelPass(holder: any) {
+    if (!confirm(`Cancel ALL passes for ${holder.name}? This cannot be undone.`)) return;
     setRefreshing(true);
-    const { data: userBookings } = await supabase
-      .from('bookings')
-      .select('id, program, message')
-      .eq('email', holder.email)
-      .neq('status', 'cancelled');
-      
-    if (userBookings) {
-      const idsToCancel = userBookings.filter(b => 
-        b.program === 'pass-5' || 
-        b.program === 'pass-10' || 
-        b.program === 'pass-usage' || 
-        (b.program === 'micro-academy' && b.message?.includes('PASS USAGE'))
-      ).map(b => b.id);
-      
-      if (idsToCancel.length > 0) {
-        await supabase.from('bookings').update({ status: 'cancelled' }).in('id', idsToCancel);
-      }
-    }
-    fetchPassHolders();
+    const { error } = await supabase
+      .from("pass_holders")
+      .update({ status: "cancelled" })
+      .eq("id", holder.id);
+    if (!error) fetchPassHolders();
+    else setRefreshing(false);
   }
 
   if (loading && !refreshing) {
@@ -868,12 +831,21 @@ function PassHoldersTab() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-2xl font-black uppercase mb-1">Active Pass Holders</h2>
-          <p className="text-white/40 text-sm">Users with remaining session balances. Once balance reaches 0, they are automatically removed.</p>
+          <p className="text-white/40 text-sm">Live from the <code className="text-white/30">pass_holders</code> table. Sessions auto-deducted on booking.</p>
         </div>
-        <button onClick={fetchPassHolders} className="flex items-center gap-2 text-xs font-bold text-white/50 hover:text-white transition-all uppercase px-4 py-2 border border-white/10 rounded-xl hover:border-white/30"><RefreshCw className={`w-3 h-3 ${refreshing ? "animate-spin" : ""}`} /> Refresh</button>
+        <button onClick={fetchPassHolders} className="flex items-center gap-2 text-xs font-bold text-white/50 hover:text-white transition-all uppercase px-4 py-2 border border-white/10 rounded-xl hover:border-white/30">
+          <RefreshCw className={`w-3 h-3 ${refreshing ? "animate-spin" : ""}`} /> Refresh
+        </button>
       </div>
-      
-      {passHolders.length === 0 ? (
+
+      {fetchError && (
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold px-5 py-4 rounded-2xl flex items-center justify-between">
+          <span>{fetchError}</span>
+          <button onClick={fetchPassHolders} className="text-xs underline opacity-70 hover:opacity-100">Retry</button>
+        </div>
+      )}
+
+      {!fetchError && passHolders.length === 0 ? (
         <div className="text-center py-32 bg-[#111] border border-white/5 rounded-3xl">
           <CheckCircle className="w-12 h-12 text-white/10 mx-auto mb-4" />
           <h3 className="text-xl font-bold mb-2">No Active Passes</h3>
@@ -881,35 +853,51 @@ function PassHoldersTab() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {passHolders.map(holder => (
-            <div key={holder.email} className="bg-[#111] p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
-              <div className="mb-6">
-                <h3 className="font-black text-xl uppercase mb-1 truncate">{holder.name}</h3>
-                <p className="text-white/50 text-xs truncate flex items-center gap-2"><Mail className="w-3 h-3"/> {holder.email}</p>
-              </div>
-              
-              <div className="flex items-center justify-between pt-4 border-t border-white/5 mb-4">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Capacity</p>
-                  <p className="font-bold text-lg">{holder.capacity}</p>
+          {passHolders.map(holder => {
+            const remaining = holder.sessions_total - holder.sessions_used;
+            const passLabel = holder.pass_type === "pass-5" ? "5-Session Pass" : "10-Session Pass";
+            return (
+              <div key={holder.id} className="bg-[#111] p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
+                <div className="mb-4">
+                  <div className="flex items-start justify-between mb-1">
+                    <h3 className="font-black text-xl uppercase truncate flex-1">{holder.name}</h3>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/30 bg-white/5 px-2 py-1 rounded-lg ml-2 shrink-0">{passLabel}</span>
+                  </div>
+                  <p className="text-white/50 text-xs truncate flex items-center gap-2">
+                    <Mail className="w-3 h-3 shrink-0" /> {holder.email}
+                  </p>
+                  {holder.phone && (
+                    <p className="text-white/30 text-xs mt-1 flex items-center gap-2">
+                      <Phone className="w-3 h-3 shrink-0" /> {holder.phone}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Used</p>
-                  <p className="font-bold text-lg">{holder.used}</p>
+
+                <div className="flex items-center justify-between py-4 border-y border-white/5 mb-4">
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Total</p>
+                    <p className="font-bold text-lg">{holder.sessions_total}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Used</p>
+                    <p className="font-bold text-lg">{holder.sessions_used}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[#F97316] mb-1">Left</p>
+                    <p className="font-black text-2xl text-white">{remaining}</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-[#F97316] mb-1">Remaining</p>
-                  <p className="font-black text-2xl text-white">{holder.capacity - holder.used}</p>
+
+                <div className="flex gap-2">
+                  <button onClick={() => addSessions(holder, 5)} title="Add 5 sessions" className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-[10px] uppercase transition-all">+5</button>
+                  <button onClick={() => deductSession(holder)} title="Deduct 1 session" className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-[10px] uppercase transition-all">-1</button>
+                  <button onClick={() => cancelPass(holder)} title="Cancel pass" className="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold px-3 py-2 rounded-lg transition-all">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
-              
-              <div className="pt-4 border-t border-white/5 flex gap-2">
-                <button onClick={() => adjustCapacity(holder, 5)} title="Add 5 Sessions" className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-[10px] uppercase transition-all">+ 5 Sess</button>
-                <button onClick={() => adjustUsage(holder)} title="Deduct 1 Session" className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-[10px] uppercase transition-all">- 1 Sess</button>
-                <button onClick={() => removeUser(holder)} title="Remove All Passes" className="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold px-3 py-2 rounded-lg transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
