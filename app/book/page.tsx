@@ -121,6 +121,7 @@ function BookPageInner() {
   const [preferredDate, setPreferredDate] = useState("");
   const [preferredTime, setPreferredTime] = useState("");
   const [name, setName] = useState("");
+  const [parentName, setParentName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -166,6 +167,7 @@ function BookPageInner() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          parentName,
           email,
           program: programType === "private" ? "private" : "micro-academy",
           preferred_date: preferredDate || null,
@@ -219,7 +221,21 @@ function BookPageInner() {
             <p className="text-white/40 text-sm">Choose your session type, then pick a date.</p>
           </div>
 
-          <div className="space-y-3 mb-8">
+          {/* Pass upsell — top */}
+          <div className="bg-white/3 border border-white/8 rounded-2xl p-5 flex items-center gap-4 mb-6">
+            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+              <Zap className="w-5 h-5 text-white/60" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-white/70">Have a pass? Just enter your email when booking.</p>
+              <p className="text-xs text-white/30 mt-0.5">We'll automatically detect and deduct your session.</p>
+            </div>
+            <Link href="/buy-pass" className="text-xs font-black text-white/50 hover:text-white uppercase tracking-wider whitespace-nowrap transition-colors">
+              Buy Pass →
+            </Link>
+          </div>
+
+          <div className="space-y-3">
             <button
               type="button"
               onClick={() => { setProgramType("session"); setStep(2); }}
@@ -247,20 +263,6 @@ function BookPageInner() {
                 <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-white transition-colors" />
               </div>
             </button>
-          </div>
-
-          {/* Pass upsell */}
-          <div className="bg-white/3 border border-white/8 rounded-2xl p-5 flex items-center gap-4">
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
-              <Zap className="w-5 h-5 text-white/60" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-bold text-white/70">Have a pass? Just enter your email when booking.</p>
-              <p className="text-xs text-white/30 mt-0.5">We'll automatically detect and deduct your session.</p>
-            </div>
-            <Link href="/buy-pass" className="text-xs font-black text-white/50 hover:text-white uppercase tracking-wider whitespace-nowrap transition-colors">
-              Buy Pass →
-            </Link>
           </div>
         </div>
       </div>
@@ -379,13 +381,24 @@ function BookPageInner() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Full Name</label>
+            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Athlete Full Name</label>
             <input
               required
               type="text"
               placeholder="JORDAN SMITH"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-white/20 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2 block">Parent Name</label>
+            <input
+              required
+              type="text"
+              placeholder="MICHAEL SMITH"
+              value={parentName}
+              onChange={(e) => setParentName(e.target.value)}
               className="w-full bg-[#111] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-white/20 transition-colors"
             />
           </div>
@@ -413,7 +426,7 @@ function BookPageInner() {
             </button>
             <button
               type="submit"
-              disabled={!name || !email || loading}
+              disabled={!name || !parentName || !email || loading}
               className="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-30"
             >
               {loading ? "BOOKING..." : "CONFIRM BOOKING"}

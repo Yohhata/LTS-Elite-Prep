@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, program, preferred_date, preferred_time } = body;
+    const { name, parentName, email, phone, program, preferred_date, preferred_time } = body;
 
     if (!name || !email || !program) {
       return NextResponse.json({ error: "Name, email, and program are required" }, { status: 400 });
@@ -125,7 +125,8 @@ export async function POST(request: Request) {
         subject: `New Booking: ${name} — ${isPassHolder ? "Pass Usage" : program === "private" ? "Private" : "Drop-In"}`,
         html: `
           <h2>New Session Booking</h2>
-          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Athlete:</strong> ${name}</p>
+          <p><strong>Parent:</strong> ${parentName || "—"}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Phone:</strong> ${phone || "—"}</p>
           <p><strong>Type:</strong> ${isPassHolder ? "Pass Holder (1 session deducted)" : program === "private" ? "Private Training ($85)" : "Drop-In ($70)"}</p>
