@@ -221,35 +221,35 @@ function BookPageInner() {
             <p className="text-white/40 text-sm">Choose your session type, then pick a date.</p>
           </div>
 
-          {/* Pass upsell — top */}
-          <div className="bg-white/3 border border-white/8 rounded-2xl p-5 flex items-center gap-4 mb-6">
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
-              <Zap className="w-5 h-5 text-white/60" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-bold text-white/70">Have a pass? Just enter your email when booking.</p>
-              <p className="text-xs text-white/30 mt-0.5">We'll automatically detect and deduct your session.</p>
-            </div>
-            <Link href="/buy-pass" className="text-xs font-black text-white/50 hover:text-white uppercase tracking-wider whitespace-nowrap transition-colors">
-              Buy Pass →
-            </Link>
-          </div>
-
           <div className="space-y-3">
+            {/* Book Session — top, highlighted */}
             <button
               type="button"
               onClick={() => { setProgramType("session"); setStep(2); }}
-              className="w-full text-left p-6 rounded-2xl border bg-[#111] border-white/5 hover:border-white/20 transition-all group"
+              className="w-full text-left p-6 rounded-2xl border bg-white text-black border-white transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-black text-xl uppercase text-white mb-1">Micro Academy Session</h3>
-                  <p className="text-sm text-white/40">Drop-in $70 · Pass holders deducted automatically</p>
+                  <h3 className="font-black text-xl uppercase mb-1">Book Session</h3>
+                  <p className="text-sm text-black/50">Micro Academy · Drop-in $70 · Pass holders deducted automatically</p>
                 </div>
-                <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-white transition-colors" />
+                <ArrowRight className="w-5 h-5 text-black/40 group-hover:text-black transition-colors" />
               </div>
             </button>
 
+            {/* Buy Pass */}
+            <Link
+              href="/buy-pass"
+              className="w-full text-left p-6 rounded-2xl border bg-[#111] border-white/5 hover:border-white/20 transition-all group flex items-center justify-between"
+            >
+              <div>
+                <h3 className="font-black text-xl uppercase text-white mb-1">Buy Pass</h3>
+                <p className="text-sm text-white/40">5-Session $299 · 10-Session $449 · Save per session</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-white transition-colors" />
+            </Link>
+
+            {/* Private Training */}
             <button
               type="button"
               onClick={() => { setProgramType("private"); setStep(2); }}
