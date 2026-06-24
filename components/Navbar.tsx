@@ -20,6 +20,7 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
   { href: "/buy-pass", label: "Buy Pass" },
   { href: "/book", label: "Book" },
+  { href: "/camp", label: "Camp" },
   { href: "/college-contact", label: "College" },
   { href: "/admin", label: "Admin" },
 ];

@@ -105,7 +105,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
 // ── ダッシュボード ────────────────────────────────────────────
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"bookings" | "passes" | "college" | "schedule">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "passes" | "camp" | "college" | "schedule">("bookings");
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-24 pb-16">
@@ -138,6 +138,13 @@ function Dashboard() {
               Pass Holders
             </button>
             <button
+              onClick={() => setActiveTab("camp")}
+              className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "camp" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
+                }`}
+            >
+              Camp
+            </button>
+            <button
               onClick={() => setActiveTab("college")}
               className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${activeTab === "college" ? "bg-[#F97316] text-white shadow-lg" : "text-white/50 hover:text-white"
                 }`}
@@ -156,6 +163,7 @@ function Dashboard() {
 
         {activeTab === "bookings" && <BookingsTab type="sessions" />}
         {activeTab === "passes" && <PassHoldersTab />}
+        {activeTab === "camp" && <CampTab />}
         {activeTab === "college" && <BookingsTab type="college" />}
         {activeTab === "schedule" && <ScheduleTab />}
       </div>
@@ -755,6 +763,156 @@ function DetailRow({
       <Icon className="w-3.5 h-3.5 text-white/20 shrink-0" />
       <span className="text-xs text-white/25">{label}:</span>
       <span className="text-sm text-white/60 truncate">{value}</span>
+    </div>
+  );
+}
+
+// ── Camp Tab ──────────────────────────────────────────────────────
+
+const PACKAGE_LABELS: Record<string, string> = {
+  "weekend-1": "Weekend 1 (Jul 11+12)",
+  "weekend-2": "Weekend 2 (Jul 18+19)",
+  "both": "Both Weekends",
+  "dropin": "Drop-in",
+};
+
+const SESSION_LABELS: Record<string, string> = {
+  jul11: "Jul 11 BUILD",
+  jul12: "Jul 12 PERFORM",
+  jul18: "Jul 18 BUILD",
+  jul19: "Jul 19 PERFORM",
+};
+
+function CampTab() {
+  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  async function fetchRegistrations() {
+    setLoading(true);
+    setFetchError(null);
+    try {
+      const { data, error } = await supabase
+        .from("camp_registrations")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      setRegistrations(data || []);
+    } catch (err: any) {
+      setFetchError(err.message || "Failed to fetch camp registrations");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { fetchRegistrations(); }, []);
+
+  const filtered = registrations.filter(r =>
+    !search ||
+    r.athlete_name?.toLowerCase().includes(search.toLowerCase()) ||
+    r.parent_name?.toLowerCase().includes(search.toLowerCase()) ||
+    r.parent_email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const stats = {
+    total: registrations.length,
+    both: registrations.filter(r => r.package_type === "both").length,
+    weekend1: registrations.filter(r => r.package_type === "weekend-1").length,
+    weekend2: registrations.filter(r => r.package_type === "weekend-2").length,
+    dropin: registrations.filter(r => r.package_type === "dropin").length,
+  };
+
+  return (
+    <div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+        {[
+          { label: "Total", value: stats.total },
+          { label: "Both Weekends", value: stats.both },
+          { label: "Weekend 1", value: stats.weekend1 },
+          { label: "Weekend 2", value: stats.weekend2 },
+          { label: "Drop-in", value: stats.dropin },
+        ].map(s => (
+          <div key={s.label} className="bg-[#111] border border-white/5 rounded-xl p-4 text-center">
+            <p className="text-2xl font-black">{s.value}</p>
+            <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Toolbar */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+          <input
+            type="text"
+            placeholder="Search athlete, parent, or email..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full bg-[#111] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white outline-none focus:border-white/30"
+          />
+        </div>
+        <button
+          onClick={fetchRegistrations}
+          className="p-2.5 bg-[#111] border border-white/10 rounded-xl hover:border-white/30 transition-colors"
+        >
+          <RefreshCw className="w-4 h-4 text-white/50" />
+        </button>
+      </div>
+
+      {fetchError && (
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-4 rounded-xl mb-4 flex justify-between items-center">
+          <span>{fetchError}</span>
+          <button onClick={fetchRegistrations} className="text-xs underline opacity-70 hover:opacity-100">Retry</button>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-center py-20 text-white/30">Loading…</div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-20 text-white/20 border border-dashed border-white/10 rounded-2xl">
+          <p className="font-bold uppercase tracking-widest text-sm">No registrations found</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map(r => {
+            const pkgLabel = PACKAGE_LABELS[r.package_type] || r.package_type || "—";
+            const sessionLabel = r.dropin_session ? SESSION_LABELS[r.dropin_session] || r.dropin_session : null;
+            const date = r.created_at ? new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+            return (
+              <div key={r.id} className="bg-[#111] border border-white/5 rounded-2xl p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1 flex-wrap">
+                      <span className="font-black text-white">{r.athlete_name}</span>
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/10 text-white/60">
+                        {pkgLabel}
+                        {sessionLabel ? ` · ${sessionLabel}` : ""}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/40">
+                      <span className="flex items-center gap-1"><Users className="w-3 h-3" /> Parent: {r.parent_name || "—"}</span>
+                      <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {r.parent_email || "—"}</span>
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {date}</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-xl font-black text-white">{r.amount || "—"}</p>
+                    <p className={`text-[10px] uppercase font-bold mt-0.5 ${
+                      r.status === "paid" ? "text-green-400" :
+                      r.status === "cancelled" ? "text-red-400" :
+                      "text-yellow-400"
+                    }`}>
+                      {r.status || "pending"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -198,6 +198,7 @@ export default function Home() {
       <TickerSection />
       <StatsSection />
       <ProgramsSection />
+      <BlueprintCampSection />
       <PactSection />
       <CoachesSection />
       <TestimonialsSection />
@@ -461,7 +462,164 @@ function ProgramsSection() {
   );
 }
 
-// ── PACT Section ─────────────────────────────────────────────
+// ── Blueprint Camp 告知 ───────────────────────────────────────
+function BlueprintCampSection() {
+  const DATES = [
+    { date: "JULY 11", time: "2:00–5:00 PM" },
+    { date: "JULY 12", time: "4:00–7:00 PM" },
+    { date: "JULY 18", time: "2:00–5:00 PM" },
+    { date: "JULY 19", time: "2:00–5:00 PM" },
+  ];
+  return (
+    <section className="py-0 bg-black border-b border-white/5 overflow-hidden">
+      <Link href="/camp">
+        <div
+          className="relative cursor-pointer group min-h-[560px] flex items-center"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Cpath d='M 50 0 L 0 0 0 50' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='0.8'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cpath d='M 250 0 L 0 0 0 250' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1'/%3E%3C/svg%3E")`,
+            backgroundSize: "50px 50px, 250px 250px",
+          }}
+        >
+          {/* ── BACKGROUND: full basketball technical drawing ── */}
+          <div className="absolute inset-0 flex items-center justify-end pointer-events-none select-none">
+            <svg
+              viewBox="0 0 620 560"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-full w-auto opacity-[0.18]"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              {/* outer measurement box */}
+              <line x1="60" y1="30" x2="380" y2="30" stroke="white" strokeWidth="0.7"/>
+              <line x1="60" y1="30" x2="60" y2="340" stroke="white" strokeWidth="0.7"/>
+              <line x1="380" y1="30" x2="380" y2="340" stroke="white" strokeWidth="0.7"/>
+              <line x1="60" y1="340" x2="380" y2="340" stroke="white" strokeWidth="0.7"/>
+              {/* corner ticks */}
+              <line x1="52" y1="30" x2="68" y2="30" stroke="white" strokeWidth="1"/>
+              <line x1="60" y1="22" x2="60" y2="38" stroke="white" strokeWidth="1"/>
+              <line x1="372" y1="30" x2="388" y2="30" stroke="white" strokeWidth="1"/>
+              <line x1="380" y1="22" x2="380" y2="38" stroke="white" strokeWidth="1"/>
+              {/* Ø label */}
+              <text x="220" y="22" textAnchor="middle" fill="white" fontSize="10" fontFamily="monospace">Ø 290mm</text>
+
+              {/* Main ball */}
+              <circle cx="220" cy="185" r="155" stroke="white" strokeWidth="2"/>
+              {/* guide circles */}
+              <circle cx="220" cy="185" r="110" stroke="white" strokeWidth="0.6" strokeDasharray="5 6"/>
+              <circle cx="220" cy="185" r="55"  stroke="white" strokeWidth="0.6"/>
+
+              {/* Seam curves */}
+              <path d="M 220 30 Q 375 107 375 185 Q 375 263 220 340" stroke="white" strokeWidth="2" fill="none"/>
+              <path d="M 220 30 Q 65 107 65 185 Q 65 263 220 340" stroke="white" strokeWidth="2" fill="none"/>
+              <path d="M 65 185 Q 142 158 220 185 Q 298 212 375 185" stroke="white" strokeWidth="1.2" fill="none"/>
+
+              {/* Hexagon texture */}
+              <g transform="translate(270,75)">
+                {[0,1,2,3,4,5].map(row =>
+                  [0,1,2,3,4,5].map(col => {
+                    const x = col * 14 + (row % 2) * 7;
+                    const y = row * 12;
+                    const pts = [
+                      [x+7,y],[x+14,y+3.5],[x+14,y+8.5],
+                      [x+7,y+12],[x+0,y+8.5],[x+0,y+3.5],
+                    ].map(([px,py])=>`${px},${py}`).join(" ");
+                    return <polygon key={`${row}-${col}`} points={pts} stroke="white" strokeWidth="0.6" fill="none"/>;
+                  })
+                )}
+              </g>
+
+              {/* Center crosshair */}
+              <line x1="208" y1="185" x2="232" y2="185" stroke="white" strokeWidth="1.5"/>
+              <line x1="220" y1="173" x2="220" y2="197" stroke="white" strokeWidth="1.5"/>
+              <circle cx="220" cy="185" r="3" fill="white"/>
+
+              {/* Court diagram — bottom right */}
+              <g transform="translate(420, 340)">
+                <rect x="0" y="0" width="180" height="120" stroke="white" strokeWidth="1.2" fill="none"/>
+                <line x1="90" y1="0" x2="90" y2="120" stroke="white" strokeWidth="0.8"/>
+                <circle cx="90" cy="60" r="20" stroke="white" strokeWidth="0.8"/>
+                <rect x="0" y="36" width="38" height="48" stroke="white" strokeWidth="0.8" fill="none"/>
+                <path d="M 38 36 Q 72 60 38 84" stroke="white" strokeWidth="0.8" fill="none"/>
+                <rect x="142" y="36" width="38" height="48" stroke="white" strokeWidth="0.8" fill="none"/>
+                <path d="M 142 36 Q 108 60 142 84" stroke="white" strokeWidth="0.8" fill="none"/>
+              </g>
+
+              {/* PACT text */}
+              <text x="30" y="520" fill="white" fontSize="12" fontFamily="monospace" letterSpacing="6">PACT</text>
+              <text x="30" y="535" fill="white" fontSize="8" fontFamily="monospace" opacity="0.5">PURPOSEFUL · ALERT · CONSCIOUS · TECHNICAL</text>
+
+              {/* bottom rule */}
+              <line x1="30" y1="548" x2="600" y2="548" stroke="white" strokeWidth="0.5"/>
+              <text x="315" y="558" textAnchor="middle" fill="white" fontSize="8" fontFamily="monospace">REG. CLOSES JULY 10</text>
+            </svg>
+          </div>
+
+          {/* vertical guide lines */}
+          <div className="absolute top-0 left-4 bottom-0 w-px bg-white/5 pointer-events-none" />
+          <div className="absolute top-0 right-4 bottom-0 w-px bg-white/5 pointer-events-none" />
+
+          {/* top measurement line */}
+          <div className="absolute top-4 left-6 right-6 flex items-center pointer-events-none opacity-15">
+            <div className="h-px flex-1 bg-white" />
+            <span className="text-[8px] font-bold text-white mx-3 tracking-[0.2em] uppercase font-mono">Blueprint Camps 2026</span>
+            <div className="h-px flex-1 bg-white" />
+          </div>
+
+          {/* ── FOREGROUND: text content ── */}
+          <div className="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-10 py-20">
+            <div className="max-w-lg">
+              {/* crosshair icon */}
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="opacity-30 mb-6">
+                <circle cx="14" cy="14" r="10" stroke="white" strokeWidth="0.8"/>
+                <line x1="14" y1="0" x2="14" y2="28" stroke="white" strokeWidth="0.8"/>
+                <line x1="0" y1="14" x2="28" y2="14" stroke="white" strokeWidth="0.8"/>
+                <line x1="2" y1="0" x2="2" y2="7" stroke="white" strokeWidth="0.8"/>
+                <line x1="0" y1="2" x2="7" y2="2" stroke="white" strokeWidth="0.8"/>
+              </svg>
+
+              <h2
+                className="text-6xl sm:text-7xl lg:text-8xl font-black uppercase leading-none mb-2 tracking-tighter"
+                style={{ fontStyle: "italic" }}
+              >
+                BLUE<br />PRINT<br />CAMPS
+              </h2>
+
+              <div className="flex items-center gap-2 mt-4 mb-8">
+                <div className="h-px w-8 bg-white/40" />
+                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.25em]">July 2026 · High School</span>
+              </div>
+
+              {/* Date list */}
+              <div className="mb-8">
+                {DATES.map((d, i) => (
+                  <div key={i} className="flex items-center gap-4 py-3 border-b border-white/8">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 opacity-40">
+                      <rect x="1" y="1" width="14" height="14" stroke="white" strokeWidth="0.8"/>
+                      <rect x="3" y="3" width="4" height="4" fill="white" fillOpacity="0.5"/>
+                      <rect x="9" y="3" width="4" height="4" fill="white" fillOpacity="0.3"/>
+                      <rect x="3" y="9" width="4" height="4" fill="white" fillOpacity="0.3"/>
+                      <rect x="9" y="9" width="4" height="4" fill="white" fillOpacity="0.5"/>
+                    </svg>
+                    <span className="font-black text-white uppercase tracking-widest text-sm w-24">{d.date}</span>
+                    <span className="text-white/40 font-bold text-sm">{d.time}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="inline-flex items-center gap-3 bg-white text-black font-black text-sm uppercase tracking-wider px-6 py-3 rounded-full group-hover:bg-white/90 transition-colors">
+                REGISTER NOW
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </section>
+  );
+}
+
 function PactSection() {
   return (
     <section className="py-24 lg:py-32 bg-[#060606] border-y border-white/5">
