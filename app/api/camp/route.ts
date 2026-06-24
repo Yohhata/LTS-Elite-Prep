@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { athleteName, parentName, parentEmail, campId, campName, campPrice } = body;
+    const { athleteName, parentName, parentEmail, campId, campName, campPrice, packageType, dropinSession } = body;
 
     if (!athleteName || !parentName || !parentEmail) {
       return NextResponse.json({ error: "Athlete name, parent name, and parent email are required" }, { status: 400 });
@@ -22,6 +22,8 @@ export async function POST(request: Request) {
         camp_id: campId || null,
         camp_name: campName || null,
         amount: campPrice || null,
+        package_type: packageType || null,
+        dropin_session: dropinSession || null,
         status: "pending_payment",
       });
     }
@@ -41,7 +43,10 @@ export async function POST(request: Request) {
             <p>To secure your spot, please complete the payment via E-transfer within the next 48 hours.</p>
 
             <div style="margin:30px 0;padding:25px;background:#f9f9f9;border-radius:16px;border:1px solid #eee;">
-              <h3 style="margin-top:0;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</h3>
+              <h3 style="margin-top:0;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Registration Summary</h3>
+              ${packageType ? `<p style="margin:10px 0;"><strong>Package:</strong> ${packageType}</p>` : ""}
+              ${dropinSession ? `<p style="margin:10px 0;"><strong>Session:</strong> ${dropinSession}</p>` : ""}
+              <h3 style="margin-top:16px;font-size:16px;text-transform:uppercase;letter-spacing:0.05em;">Payment Details</h3>
               <p style="margin:10px 0;"><strong>E-transfer to:</strong> info@ltseliteprep.ca</p>
               ${campPrice ? `<p style="margin:10px 0;"><strong>Amount:</strong> ${campPrice}</p>` : ""}
               <p style="margin:10px 0;font-size:13px;color:#666;"><em>Note: Please include the athlete's name (${athleteName}) in the transfer notes.</em></p>
@@ -66,6 +71,8 @@ export async function POST(request: Request) {
           <p><strong>Parent:</strong> ${parentName}</p>
           <p><strong>Parent Email:</strong> ${parentEmail}</p>
           <p><strong>Camp:</strong> ${campName || "—"}</p>
+          <p><strong>Package:</strong> ${packageType || "—"}</p>
+          ${dropinSession ? `<p><strong>Drop-in Session:</strong> ${dropinSession}</p>` : ""}
           <p><strong>Amount:</strong> ${campPrice || "TBD"}</p>
         `,
       });

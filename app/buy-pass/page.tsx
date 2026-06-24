@@ -12,18 +12,9 @@ const PASSES = [
     name: "5-Session Pass",
     price: "$299",
     perSession: "$59.80/session",
-    desc: "Our most flexible option for consistent growth.",
-    features: ["5 Sessions Included", "Flexible Scheduling", "Priority Booking", "Performance Tracking"],
+    desc: "July special — 5 sessions to use across our summer schedule.",
+    features: ["5 Sessions Included", "Any 5 of 6 July Dates", "Flexible Scheduling", "Performance Tracking"],
     highlight: true,
-  },
-  {
-    id: "pass-10" as PassType,
-    name: "10-Session Pass",
-    price: "$449",
-    perSession: "$44.90/session",
-    desc: "The elite choice. Maximum value for serious athletes.",
-    features: ["10 Sessions Included", "Maximum Value", "1-on-1 Consultation", "Video Analysis Support"],
-    highlight: false,
   },
 ];
 
