@@ -415,21 +415,11 @@ function ProgramsSection() {
                     href="/buy-pass"
                     className={`block text-center font-black py-4 rounded-xl text-sm transition-all
                       ${program.featured
-                        ? "border border-black/15 hover:border-black/30 hover:bg-black/5 text-black"
-                        : "border border-white/10 hover:border-white/30 hover:bg-white/5 text-white"
-                      }`}
-                  >
-                    5-DAY PASS ($299)
-                  </Link>
-                  <Link
-                    href="/buy-pass"
-                    className={`block text-center font-black py-4 rounded-xl text-sm transition-all
-                      ${program.featured
                         ? "bg-black text-white hover:bg-black/90 shadow-xl"
                         : "bg-white text-black hover:bg-white/90 shadow-xl"
                       }`}
                   >
-                    10-DAY PASS ($449)
+                    5-DAY PASS ($299)
                   </Link>
                   <Link
                     href="/book?program=pass-usage"
