@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
-type PackageType = "weekend-1" | "weekend-2" | "both" | "dropin";
+type PackageType = "weekend-1" | "weekend-2" | "both";
 
 const SESSIONS = [
   {
@@ -63,13 +63,6 @@ const PACKAGES: { id: PackageType; name: string; price: string; desc: string; se
     desc: "All 4 sessions — Jul 11, 12, 18 & 19",
     sessions: "4 sessions",
   },
-  {
-    id: "dropin",
-    name: "Drop-in",
-    price: "$69.99",
-    desc: "Single session of your choice",
-    sessions: "1 session",
-  },
 ];
 
 // Blueprint grid background as inline SVG data URL
@@ -79,7 +72,6 @@ const GRID_BG_LARGE = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 export default function CampPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [pkg, setPkg] = useState<PackageType>("both");
-  const [dropinSession, setDropinSession] = useState("");
 
   const [athleteName, setAthleteName] = useState("");
   const [parentName, setParentName] = useState("");
@@ -89,7 +81,6 @@ export default function CampPage() {
   const [submitted, setSubmitted] = useState(false);
 
   const selectedPkg = PACKAGES.find((p) => p.id === pkg)!;
-  const canProceed = pkg !== "dropin" || dropinSession !== "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -107,7 +98,7 @@ export default function CampPage() {
           campName: "Blueprint Series",
           campPrice: selectedPkg.price,
           packageType: pkg,
-          dropinSession: pkg === "dropin" ? dropinSession : null,
+          dropinSession: null,
         }),
       });
       if (!res.ok) {
@@ -221,8 +212,9 @@ export default function CampPage() {
 
         {/* Schedule */}
         <div className="bg-[#0d0d0d] border border-white/5 rounded-2xl overflow-hidden mb-8">
-          <div className="px-5 py-4 border-b border-white/5">
+          <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
             <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Schedule</p>
+            <p className="text-[10px] text-white/30">📍 The Hoop · 11111 Twigg Pl #1061, Richmond, BC</p>
           </div>
           {SESSIONS.map((s, i) => (
             <div
@@ -259,10 +251,7 @@ export default function CampPage() {
               <button
                 key={p.id}
                 type="button"
-                onClick={() => {
-                  setPkg(p.id);
-                  if (p.id !== "dropin") setDropinSession("");
-                }}
+                onClick={() => setPkg(p.id)}
                 className={`w-full text-left p-5 rounded-2xl border transition-all
                   ${pkg === p.id
                     ? "bg-white text-black border-white"
@@ -289,50 +278,9 @@ export default function CampPage() {
               </button>
             ))}
 
-            {/* Drop-in session picker */}
-            {pkg === "dropin" && (
-              <div className="pt-1 space-y-2">
-                <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-2">
-                  Select Session
-                </p>
-                {SESSIONS.map((s) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => setDropinSession(s.id)}
-                    className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between
-                      ${dropinSession === s.id
-                        ? "bg-white text-black border-white"
-                        : "bg-[#0a0a0a] text-white border-white/5 hover:border-white/15"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`text-[9px] font-black px-2 py-0.5 rounded shrink-0 ${
-                          dropinSession === s.id ? "bg-black/10" : "bg-white/5"
-                        }`}
-                      >
-                        {s.type}
-                      </span>
-                      <div>
-                        <p className="text-sm font-bold">{s.date}</p>
-                        <p className={`text-xs ${dropinSession === s.id ? "text-black/40" : "text-white/30"}`}>
-                          {s.desc}
-                        </p>
-                      </div>
-                    </div>
-                    <span className={`text-xs font-bold shrink-0 ml-4 ${dropinSession === s.id ? "text-black/50" : "text-white/30"}`}>
-                      {s.time}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
             <button
               type="button"
               onClick={() => setStep(2)}
-              disabled={!canProceed}
               className="w-full bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-2 mt-4 disabled:opacity-30"
             >
               CONTINUE — {selectedPkg.price}
@@ -363,12 +311,6 @@ export default function CampPage() {
                 </p>
                 <p className="font-black text-lg uppercase">{selectedPkg.name}</p>
                 <p className="text-xs text-white/40">{selectedPkg.desc}</p>
-                {pkg === "dropin" && dropinSession && (
-                  <p className="text-xs text-white/50 mt-1">
-                    {SESSIONS.find((s) => s.id === dropinSession)?.date} ·{" "}
-                    {SESSIONS.find((s) => s.id === dropinSession)?.time}
-                  </p>
-                )}
               </div>
               <p className="text-3xl font-black">{selectedPkg.price}</p>
             </div>
