@@ -199,10 +199,16 @@ export default function CampPage() {
             <span>PERFORM — in game</span>
           </div>
 
-          <div className="inline-block px-4 py-1.5 rounded-full border border-red-500/30 bg-red-500/10">
-            <p className="text-red-400 text-xs font-black uppercase tracking-widest">
-              Registration closes July 10
-            </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="inline-block px-4 py-1.5 rounded-full border border-red-500/30 bg-red-500/10">
+              <p className="text-red-400 text-xs font-black uppercase tracking-widest">
+                Registration closes July 10
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+              <span className="text-sm">📍</span>
+              <p className="text-white text-xs font-bold">The Hoop · 11111 Twigg Pl #1061, Richmond, BC</p>
+            </div>
           </div>
         </div>
       </div>
